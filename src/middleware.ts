@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
     const adminSession = request.cookies.get('admin_session')?.value;
     console.log(request.nextUrl.pathname);
-    if (adminSession !== 'true') {
+    if (adminSession !== 'true' && request.nextUrl.pathname !== '/api/auth') {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 

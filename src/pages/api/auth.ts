@@ -6,8 +6,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   const { username, password } = req.body;
-  console.log(username, password);
-  console.log(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
   if (
     username === process.env.ADMIN_USERNAME &&
     password === process.env.ADMIN_PASSWORD
