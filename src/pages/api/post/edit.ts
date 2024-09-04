@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const query = `
       UPDATE VaAjutamDinDej.posts
-      SET title = @title, content = @content, link = @link, date = GETDATE()
+      SET title = @title, content = @content, link = @link
       WHERE id = @id;
       SELECT @@ROWCOUNT AS updatedCount;
     `;
