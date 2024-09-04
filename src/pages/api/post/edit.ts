@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { id, title, content, link } = req.body;
+  const { id, title, content, link, date } = req.body;
 
-  if (!id || !title || !content || !link) {
+  if (!id || !title || !content || !link || !date) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const query = `
       UPDATE VaAjutamDinDej.posts
-      SET title = @title, content = @content, link = @link
+      SET title = @title, content = @content, link = @link, date = @date
       WHERE id = @id;
       SELECT @@ROWCOUNT AS updatedCount;
     `;
@@ -61,6 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     request.addParameter('title', TYPES.NVarChar, title);
     request.addParameter('content', TYPES.NVarChar, content);
     request.addParameter('link', TYPES.NVarChar, link);
+    request.addParameter('date', TYPES.DateTime, new Date(date));
 
     connection.execSql(request);
   });

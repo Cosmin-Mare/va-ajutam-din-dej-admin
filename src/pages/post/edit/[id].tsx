@@ -7,6 +7,7 @@ interface Post {
   title: string;
   content: string;
   link: string;
+  date: string;
 }
 
 export default function EditPost() {
@@ -14,6 +15,7 @@ export default function EditPost() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [link, setLink] = useState('');
+  const [date, setDate] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -39,6 +41,7 @@ export default function EditPost() {
         setTitle(data.title);
         setContent(data.content);
         setLink(data.link);
+        setDate(data.date.split('T')[0]); // Format the date to YYYY-MM-DD
       } else {
         setError('Failed to fetch post');
       }
@@ -56,7 +59,7 @@ export default function EditPost() {
       const response = await fetch('/api/post/edit', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, title, content, link }),
+        body: JSON.stringify({ id, title, content, link, date }),
       });
 
       if (response.ok) {
@@ -113,6 +116,16 @@ export default function EditPost() {
             id="link"
             value={link}
             onChange={(e) => setLink(e.target.value)}
+            required
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="date">Date</label>
+          <input
+            type="date"
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             required
           />
         </div>

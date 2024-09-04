@@ -5,8 +5,9 @@ import styles from '@/styles/form.module.css';
 export default function CreatePost() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [error, setError] = useState('');
   const [link, setLink] = useState('');
+  const [date, setDate] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -15,7 +16,7 @@ export default function CreatePost() {
       const response = await fetch('/api/post/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, link }),
+        body: JSON.stringify({ title, content, link, date }),
       });
 
       if (response.ok) {
@@ -59,6 +60,16 @@ export default function CreatePost() {
             id="link"
             value={link}
             onChange={(e) => setLink(e.target.value)}
+            required
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="date">Date</label>
+          <input
+            type="date"
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             required
           />
         </div>

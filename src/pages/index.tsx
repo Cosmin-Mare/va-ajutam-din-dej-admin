@@ -74,7 +74,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Welcome to My Portfolio</h1>
+      <h1 className={styles.title}>Editeaza postari si proiecte</h1>
 
       <div className={styles.createButtons}>
         <Link href="/post/create" className={styles.createButton}>Create New Post</Link>

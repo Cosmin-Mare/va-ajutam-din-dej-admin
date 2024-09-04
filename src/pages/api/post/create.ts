@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { title, content, link } = req.body;
+  const { title, content, link, date } = req.body;
 
-  if (!title || !content || !link) {
+  if (!title || !content || !link || !date) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const query = `
       INSERT INTO VaAjutamDinDej.posts (title, content, date, link)
-      VALUES (@title, @content, GETDATE(), @link);
+      VALUES (@title, @content, @date, @link);
       SELECT SCOPE_IDENTITY() AS newPostId;
     `;
 
@@ -69,6 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     request.addParameter('title', TYPES.NVarChar, title);
     request.addParameter('content', TYPES.NVarChar, content);
     request.addParameter('link', TYPES.NVarChar, link);
+    request.addParameter('date', TYPES.DateTime, new Date(date));
 
     connection.execSql(request);
   });
