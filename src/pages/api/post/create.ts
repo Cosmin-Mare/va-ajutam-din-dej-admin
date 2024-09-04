@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     request.on('row', (columns) => {
       console.log('Row received:');
-      columns.forEach(column => {
+      columns.forEach((column: { metadata: { colName: string }, value: any }) => {
         console.log(column.metadata.colName, column.value);
       });
     });
