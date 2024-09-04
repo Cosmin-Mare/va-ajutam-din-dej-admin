@@ -32,7 +32,7 @@
     margin-top: 1rem;
   }
   
-  .actions a, .actions button {
+  .actions a, .actions button, .actions Link {
     padding: 0.5rem 1rem;
     background-color: #0070f3;
     color: white;

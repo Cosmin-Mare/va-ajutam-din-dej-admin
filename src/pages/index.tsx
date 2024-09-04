@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import styles from "./index.module.css";
+import Link from 'next/link';
 
 interface Post {
   id: number;
@@ -76,8 +77,8 @@ export default function Home() {
       <h1 className={styles.title}>Welcome to My Portfolio</h1>
 
       <div className={styles.createButtons}>
-        <a href="/post/create" className={styles.createButton}>Create New Post</a>
-        <a href="/project/create" className={styles.createButton}>Create New Project</a>
+        <Link href="/post/create" className={styles.createButton}>Create New Post</Link>
+        <Link href="/project/create" className={styles.createButton}>Create New Project</Link>
       </div>
 
       <section id="posts" className={styles.section}>
@@ -89,7 +90,7 @@ export default function Home() {
               <p>{post.content.substring(0, 100)}...</p>
               <p>Date: {new Date(post.date).toLocaleDateString()}</p>
               <div className={styles.actions}>
-                <a href={`/post/edit/${post.id}`}>Edit</a>
+                <Link href={`/post/edit/${post.id}`}>Edit</Link>
                 <button onClick={() => deletePost(post.id)}>Delete</button>
               </div>
             </div>
@@ -106,7 +107,7 @@ export default function Home() {
               <p>{project.content.substring(0, 100)}...</p>
               <p>Type: {project.type}</p>
               <div className={styles.actions}>
-                <a href={`/project/edit/${project.id}`}>Edit</a>
+                <Link href={`/project/edit/${project.id}`}>Edit</Link>
                 <button onClick={() => deleteProject(project.id)}>Delete</button>
               </div>
             </div>
