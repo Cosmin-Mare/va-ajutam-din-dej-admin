@@ -17,13 +17,22 @@ interface Project {
   type: string;
 }
 
+interface Member {
+  id: number;
+  name: string;
+  status: string;
+  is_council: boolean;
+}
+
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
     fetchPosts();
     fetchProjects();
+    fetchMembers();
   }, []);
 
   const fetchPosts = async () => {
@@ -50,6 +59,18 @@ export default function Home() {
     }
   };
 
+  const fetchMembers = async () => {
+    try {
+      const response = await fetch('/api/member/get-all');
+      if (response.ok) {
+        const data = await response.json();
+        setMembers(data);
+      }
+    } catch (error) {
+      console.error('Error fetching members:', error);
+    }
+  };
+
   const deletePost = async (id: number) => {
     try {
       const response = await fetch(`/api/post/delete?id=${id}`, { method: 'DELETE' });
@@ -72,13 +93,25 @@ export default function Home() {
     }
   };
 
+  const deleteMember = async (id: number) => {
+    try {
+      const response = await fetch(`/api/member/delete?id=${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setMembers(members.filter(member => member.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting member:', error);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Editeaza postari si proiecte</h1>
+      <h1 className={styles.title}>Editeaza postari, proiecte si membri</h1>
 
       <div className={styles.createButtons}>
         <Link href="/post/create" className={styles.createButton}>Create New Post</Link>
         <Link href="/project/create" className={styles.createButton}>Create New Project</Link>
+        <Link href="/member/create" className={styles.createButton}>Create New Member</Link>
       </div>
 
       <section id="posts" className={styles.section}>
@@ -109,6 +142,23 @@ export default function Home() {
               <div className={styles.actions}>
                 <Link href={`/project/edit/${project.id}`}>Edit</Link>
                 <button onClick={() => deleteProject(project.id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="members" className={styles.section}>
+        <h2>Members</h2>
+        <div className={styles.gallery}>
+          {members.map((member) => (
+            <div key={member.id} className={styles.item}>
+              <h3>{member.name}</h3>
+              <p>Status: {member.status}</p>
+              <p>Council Member: {member.is_council ? 'Yes' : 'No'}</p>
+              <div className={styles.actions}>
+                <Link href={`/member/edit/${member.id}`}>Edit</Link>
+                <button onClick={() => deleteMember(member.id)}>Delete</button>
               </div>
             </div>
           ))}
