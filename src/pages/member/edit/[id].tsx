@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styles from '../../../styles/Form.module.css';
+import styles from '../../../styles/form.module.css';
 
 interface Member {
   id: number;
