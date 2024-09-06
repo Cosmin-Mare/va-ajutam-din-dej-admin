@@ -24,10 +24,38 @@ interface Member {
   is_council: boolean;
 }
 
+interface ConfirmationPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  message: string;
+}
+
+const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({ isOpen, onClose, onConfirm, message }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.popupOverlay}>
+      <div className={styles.popup}>
+        <p>{message}</p>
+        <div className={styles.popupActions}>
+          <button onClick={onConfirm}>Confirm</button>
+          <button onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [popupState, setPopupState] = useState<{ isOpen: boolean; message: string; onConfirm: () => void }>({
+    isOpen: false,
+    message: '',
+    onConfirm: () => {},
+  });
 
   useEffect(() => {
     fetchPosts();
@@ -69,6 +97,21 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching members:', error);
     }
+  };
+
+  const showDeleteConfirmation = (type: string, id: number, deleteFunction: (id: number) => Promise<void>) => {
+    setPopupState({
+      isOpen: true,
+      message: `Are you sure you want to delete this ${type}?`,
+      onConfirm: () => {
+        deleteFunction(id);
+        setPopupState({ ...popupState, isOpen: false });
+      },
+    });
+  };
+
+  const closePopup = () => {
+    setPopupState({ ...popupState, isOpen: false });
   };
 
   const deletePost = async (id: number) => {
@@ -124,7 +167,7 @@ export default function Home() {
               <p>Date: {new Date(post.date).toLocaleDateString()}</p>
               <div className={styles.actions}>
                 <Link href={`/post/edit/${post.id}`}>Edit</Link>
-                <button onClick={() => deletePost(post.id)}>Delete</button>
+                <button onClick={() => showDeleteConfirmation('post', post.id, deletePost)}>Delete</button>
               </div>
             </div>
           ))}
@@ -141,7 +184,7 @@ export default function Home() {
               <p>Type: {project.type}</p>
               <div className={styles.actions}>
                 <Link href={`/project/edit/${project.id}`}>Edit</Link>
-                <button onClick={() => deleteProject(project.id)}>Delete</button>
+                <button onClick={() => showDeleteConfirmation('project', project.id, deleteProject)}>Delete</button>
               </div>
             </div>
           ))}
@@ -158,12 +201,19 @@ export default function Home() {
               <p>Council Member: {member.is_council ? 'Yes' : 'No'}</p>
               <div className={styles.actions}>
                 <Link href={`/member/edit/${member.id}`}>Edit</Link>
-                <button onClick={() => deleteMember(member.id)}>Delete</button>
+                <button onClick={() => showDeleteConfirmation('member', member.id, deleteMember)}>Delete</button>
               </div>
             </div>
           ))}
         </div>
       </section>
+
+      <ConfirmationPopup
+        isOpen={popupState.isOpen}
+        onClose={closePopup}
+        onConfirm={popupState.onConfirm}
+        message={popupState.message}
+      />
     </div>
   );
 }
