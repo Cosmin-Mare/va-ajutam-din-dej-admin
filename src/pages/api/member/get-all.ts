@@ -57,7 +57,6 @@ function queryDatabase(): Promise<Member[]> {
       const members: Member[] = [];
 
       const request = new Request(query, (err, rowCount) => {
-        console.log(rowCount)
         if (err) {
           console.error('Query error:', err);
           reject(err);
@@ -73,7 +72,7 @@ function queryDatabase(): Promise<Member[]> {
           id: columns[0].value as number,
           name: columns[1].value as string,
           status: columns[2].value as string,
-          is_council: columns[3].value as boolean,
+          is_council: Boolean(Buffer.from(columns[3].value).readUInt8()),
         };
         members.push(member);
       });
