@@ -6,6 +6,7 @@ export default function CreateMember() {
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
   const [isCouncil, setIsCouncil] = useState(false);
+  const [link, setLink] = useState('')
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -15,7 +16,7 @@ export default function CreateMember() {
       const response = await fetch('/api/member/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, status, is_council: isCouncil }),
+        body: JSON.stringify({ name, status, is_council: isCouncil, link }),
       });
 
       if (response.ok) {
@@ -60,6 +61,16 @@ export default function CreateMember() {
             id="is_council"
             checked={isCouncil}
             onChange={(e) => setIsCouncil(e.target.checked)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="link">Status</label>
+          <input
+            type="text"
+            id="link"
+            value={status}
+            onChange={(e) => setLink(e.target.value)}
+            required
           />
         </div>
         <button type="submit" className={styles.submitButton}>Create Member</button>

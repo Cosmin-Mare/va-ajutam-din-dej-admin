@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const query = `
-      DELETE FROM VaAjutamDinDej.members
+      DELETE FROM VaAjutamDinDej.members_fb_link
       WHERE id = @id;
       SELECT @@ROWCOUNT AS deletedCount;
     `;

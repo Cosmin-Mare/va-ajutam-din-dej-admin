@@ -6,6 +6,7 @@ interface Member {
   id: number;
   name: string;
   status: string;
+  link: string;
   is_council: boolean;
 }
 
@@ -13,6 +14,7 @@ export default function EditMember() {
   const [member, setMember] = useState<Member | null>(null);
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
+  const [link, setLink] = useState('');
   const [isCouncil, setIsCouncil] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +37,7 @@ export default function EditMember() {
         setName(data.name);
         setStatus(data.status);
         setIsCouncil(data.is_council);
+        setLink(data.link);
       } else {
         setError('Failed to fetch member');
       }
@@ -52,7 +55,7 @@ export default function EditMember() {
       const response = await fetch('/api/member/edit', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, name, status, is_council: isCouncil }),
+        body: JSON.stringify({ id, name, status, is_council: isCouncil, link }),
       });
 
       if (response.ok) {
@@ -110,6 +113,16 @@ export default function EditMember() {
             id="is_council"
             checked={isCouncil}
             onChange={(e) => setIsCouncil(e.target.checked)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="link">link</label>
+          <input
+            type="text"
+            id="link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            required
           />
         </div>
         <button type="submit" className={styles.submitButton}>

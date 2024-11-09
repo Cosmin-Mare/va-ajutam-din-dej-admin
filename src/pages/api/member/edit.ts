@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { id, name, status, is_council } = req.body;
+  const { id, name, status, is_council, link } = req.body;
 
-  if (!id || !name || !status || is_council === undefined) {
+  if (!id || !name || !status || is_council === undefined || !link) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -36,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const query = `
-      UPDATE VaAjutamDinDej.members
-      SET name = @name, status = @status, is_council = @is_council
+      UPDATE VaAjutamDinDej.members_fb_link
+      SET name = @name, status = @status, is_council = @is_council, link = @link
       WHERE id = @id;
       SELECT @@ROWCOUNT AS updatedCount;
     `;
@@ -59,6 +59,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     request.addParameter('name', TYPES.NVarChar, name);
     request.addParameter('status', TYPES.NVarChar, status);
     request.addParameter('is_council', TYPES.Bit, is_council);
+    request.addParameter('link', TYPES.NVarChar, link);
+    
 
     connection.execSql(request);
   });

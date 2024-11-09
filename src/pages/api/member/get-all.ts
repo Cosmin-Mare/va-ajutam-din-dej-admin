@@ -35,6 +35,7 @@ interface Member {
   name: string;
   status: string;
   is_council: boolean;
+  link: string;
 }
 
 function queryDatabase(): Promise<Member[]> {
@@ -49,8 +50,8 @@ function queryDatabase(): Promise<Member[]> {
       }
 
       const query = `
-        SELECT id, name, status, is_council
-        FROM VaAjutamDinDej.members
+        SELECT id, name, status, is_council, link
+        FROM VaAjutamDinDej.members_fb_link
         ORDER BY name;
       `;
 
@@ -73,6 +74,7 @@ function queryDatabase(): Promise<Member[]> {
           name: columns[1].value as string,
           status: columns[2].value as string,
           is_council: Boolean(Buffer.from(columns[3].value).readUInt8()),
+          link: columns[4].value as string,
         };
         members.push(member);
       });

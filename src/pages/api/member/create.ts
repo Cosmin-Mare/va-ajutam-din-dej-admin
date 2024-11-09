@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { name, status, is_council } = req.body;
+  const { name, status, is_council, link } = req.body;
 
-  if (!name || !status || is_council === undefined) {
+  if (!name || !status || !link || is_council === undefined) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -36,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const query = `
-      INSERT INTO VaAjutamDinDej.members (name, status, is_council)
-      VALUES (@name, @status, @is_council);
+      INSERT INTO VaAjutamDinDej.members_fb_link (name, status, is_council, link)
+      VALUES (@name, @status, @is_council, @link);
       SELECT SCOPE_IDENTITY() AS id;
     `;
 
@@ -50,6 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     request.addParameter('name', TYPES.NVarChar, name);
     request.addParameter('status', TYPES.NVarChar, status);
+    request.addParameter('link', TYPES.NVarChar, link);
     request.addParameter('is_council', TYPES.Bit, is_council);
 
     request.on('row', (columns) => {

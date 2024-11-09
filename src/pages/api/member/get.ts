@@ -36,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const query = `
-      SELECT id, name, status, is_council
-      FROM VaAjutamDinDej.members
+      SELECT id, name, status, is_council, link
+      FROM VaAjutamDinDej.members_fb_link
       WHERE id = @id;
     `;
 
@@ -56,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         name: columns[1].value as string,
         status: columns[2].value as string,
         is_council: columns[3].value as boolean,
+        link: columns[4].value as string,
       };
     });
 
