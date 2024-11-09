@@ -64,7 +64,7 @@ export default function CreateMember() {
           />
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="link">Status</label>
+          <label htmlFor="link">Link</label>
           <input
             type="text"
             id="link"
