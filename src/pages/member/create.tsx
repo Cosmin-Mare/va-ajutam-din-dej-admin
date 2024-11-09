@@ -68,7 +68,7 @@ export default function CreateMember() {
           <input
             type="text"
             id="link"
-            value={status}
+            value={link}
             onChange={(e) => setLink(e.target.value)}
             required
           />
