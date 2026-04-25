@@ -1,0 +1,93 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--vad-canvas);
+}
+
+.topBar {
+  background: var(--vad-surface);
+  border-bottom: 1px solid var(--vad-border);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.topBarInner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.backLink {
+  font-weight: 500;
+  color: var(--vad-primary) !important;
+  white-space: nowrap;
+}
+
+.backLink:hover {
+  color: var(--vad-primary-hover) !important;
+}
+
+.breadcrumbTitle {
+  font-size: 0.9375rem;
+  color: var(--vad-muted);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 50vw;
+}
+
+.publicSite {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--vad-teal-hover) !important;
+  white-space: nowrap;
+}
+
+.publicSite:hover {
+  color: var(--vad-primary) !important;
+}
+
+/* small “external” cue without extra deps */
+.externalIcon {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg) translate(0, 0.05rem);
+  opacity: 0.85;
+}
+
+.main {
+  flex: 1;
+  max-width: var(--max-content);
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .main {
+    padding: 2rem 1.5rem 3rem;
+  }
+}

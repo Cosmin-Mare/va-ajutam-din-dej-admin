@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import styles from './login.module.css';
 
 export default function Login() {
@@ -29,7 +27,13 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <div className={styles.loginBox}>
-        <h3 className={styles.title}>Autentificare Administrator</h3>
+        <p className={styles.brand}>
+          <a href="https://vaajutamdindej.ro" target="_blank" rel="noopener noreferrer">
+            Vă Ajutăm din Dej
+          </a>
+        </p>
+        <p className={styles.brandSub}>asociație caritabilă, Dej — acces doar pentru administratori</p>
+        <h3 className={styles.title}>Autentificare</h3>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label htmlFor="username">Nume de utilizator</label>
@@ -58,6 +62,12 @@ export default function Login() {
           </div>
         </form>
         {error && <p className={styles.error}>{error}</p>}
+        <p className={styles.footerNote}>
+          Site public:{' '}
+          <a href="https://vaajutamdindej.ro" target="_blank" rel="noopener noreferrer">
+            vaajutamdindej.ro
+          </a>
+        </p>
       </div>
     </div>
   );

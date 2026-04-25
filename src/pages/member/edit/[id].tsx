@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styles from '../../../styles/form.module.css';
+import AdminLayout from '@/components/AdminLayout';
+import styles from '@/styles/form.module.css';
 
 interface Member {
   id: number;
@@ -16,14 +17,15 @@ export default function EditMember() {
   const [status, setStatus] = useState('');
   const [link, setLink] = useState('');
   const [isCouncil, setIsCouncil] = useState(false);
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
     if (id && typeof id === 'string') {
-      fetchMember(id);
+      void fetchMember(id);
     }
   }, [id]);
 
@@ -38,12 +40,13 @@ export default function EditMember() {
         setStatus(data.status);
         setIsCouncil(data.is_council);
         setLink(data.link);
+        setLoadError('');
       } else {
-        setError('Failed to fetch member');
+        setLoadError('Membrul nu a putut fi încărcat.');
       }
     } catch (error) {
       console.error('Error fetching member:', error);
-      setError('An error occurred while fetching the member');
+      setLoadError('A apărut o eroare la încărcare.');
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +54,7 @@ export default function EditMember() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     try {
       const response = await fetch('/api/member/edit', {
         method: 'PUT',
@@ -62,73 +66,96 @@ export default function EditMember() {
         router.push('/');
       } else {
         const data = await response.json();
-        setError(data.message || 'Failed to update member');
+        setFormError(data.message || 'Actualizarea a eșuat.');
       }
     } catch (error) {
       console.error('Error updating member:', error);
-      setError('An error occurred while updating the member');
+      setFormError('A apărut o eroare la salvare.');
     }
   };
 
   if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <AdminLayout title="Membru">
+        <div className={styles.loading}>Se încarcă…</div>
+      </AdminLayout>
+    );
   }
 
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
+  if (loadError) {
+    return (
+      <AdminLayout title="Membru">
+        <div className={styles.errorPage} role="alert">
+          {loadError}
+        </div>
+      </AdminLayout>
+    );
   }
 
   if (!member) {
-    return <div className={styles.error}>Member not found</div>;
+    return (
+      <AdminLayout title="Membru">
+        <div className={styles.errorPage} role="alert">
+          Membru inexistent.
+        </div>
+      </AdminLayout>
+    );
   }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Edit Member</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="status">Status</label>
-          <input
-            type="text"
-            id="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="is_council">Is Council Member</label>
-          <input
-            type="checkbox"
-            id="is_council"
-            checked={isCouncil}
-            onChange={(e) => setIsCouncil(e.target.checked)}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="link">link</label>
-          <input
-            type="text"
-            id="link"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className={styles.submitButton}>
-          Update Member
-        </button>
-      </form>
-    </div>
+    <AdminLayout title="Editare membru">
+      <div className={styles.container}>
+        <h1 className={styles.title}>Editare membru</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="name">Nume</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="status">Rol / statut</label>
+            <input
+              type="text"
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.checkboxLabel} htmlFor="is_council">
+              <input
+                type="checkbox"
+                id="is_council"
+                checked={isCouncil}
+                onChange={(e) => setIsCouncil(e.target.checked)}
+              />
+              Membru al consiliului
+            </label>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="link">Link</label>
+            <input
+              type="text"
+              id="link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formActions}>
+            <button type="submit" className={styles.submitButton}>
+              Salvează modificările
+            </button>
+          </div>
+        </form>
+        {formError && <p className={styles.error}>{formError}</p>}
+      </div>
+    </AdminLayout>
   );
 }

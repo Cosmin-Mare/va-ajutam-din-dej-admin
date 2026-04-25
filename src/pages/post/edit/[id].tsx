@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/AdminLayout';
 import styles from '@/styles/form.module.css';
 
 interface Post {
@@ -16,38 +17,36 @@ export default function EditPost() {
   const [content, setContent] = useState('');
   const [link, setLink] = useState('');
   const [date, setDate] = useState('');
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { id } = router.query;
 
   useEffect(() => {
-    console.log("useEffect triggered, id:", id);
     if (id && typeof id === 'string') {
-      fetchPost(id);
+      void fetchPost(id);
     }
   }, [id]);
 
   const fetchPost = async (postId: string) => {
-    console.log("Fetching post with id:", postId);
     setIsLoading(true);
     try {
       const response = await fetch(`/api/post/get?id=${postId}`);
-      console.log("Fetch response:", response);
       if (response.ok) {
         const data = await response.json();
-        console.log("Fetched data:", data);
         setPost(data);
         setTitle(data.title);
         setContent(data.content);
         setLink(data.link);
-        setDate(data.date.split('T')[0]); // Format the date to YYYY-MM-DD
+        setDate(data.date.split('T')[0]);
+        setLoadError('');
       } else {
-        setError('Failed to fetch post');
+        setLoadError('Postarea nu a putut fi încărcată.');
       }
     } catch (error) {
       console.error('Error fetching post:', error);
-      setError('An error occurred while fetching the post');
+      setLoadError('A apărut o eroare la încărcarea postării.');
     } finally {
       setIsLoading(false);
     }
@@ -55,6 +54,7 @@ export default function EditPost() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     try {
       const response = await fetch('/api/post/edit', {
         method: 'PUT',
@@ -66,73 +66,94 @@ export default function EditPost() {
         router.push('/');
       } else {
         const data = await response.json();
-        setError(data.message || 'Failed to update post');
+        setFormError(data.message || 'Actualizarea a eșuat.');
       }
     } catch (error) {
       console.error('Error updating post:', error);
-      setError('An error occurred while updating the post');
+      setFormError('A apărut o eroare la salvare.');
     }
   };
 
   if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <AdminLayout title="Postare">
+        <div className={styles.loading}>Se încarcă…</div>
+      </AdminLayout>
+    );
   }
 
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
+  if (loadError) {
+    return (
+      <AdminLayout title="Postare">
+        <div className={styles.errorPage} role="alert">
+          {loadError}
+        </div>
+      </AdminLayout>
+    );
   }
 
   if (!post) {
-    return <div className={styles.error}>Post not found</div>;
+    return (
+      <AdminLayout title="Postare">
+        <div className={styles.errorPage} role="alert">
+          Postare inexistentă.
+        </div>
+      </AdminLayout>
+    );
   }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Edit Post</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.formGroup}>
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="content">Content</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="link">Link</label>
-          <input
-            type="text"
-            id="link"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="date">Date</label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className={styles.submitButton}>
-          Update Post
-        </button>
-      </form>
-    </div>
+    <AdminLayout title="Editare postare">
+      <div className={styles.container}>
+        <h1 className={styles.title}>Editare postare</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="title">Titlu</label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="content">Conținut</label>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="link">Link (URL)</label>
+            <input
+              type="text"
+              id="link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="date">Data</label>
+            <input
+              type="date"
+              id="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formActions}>
+            <button type="submit" className={styles.submitButton}>
+              Salvează modificările
+            </button>
+          </div>
+        </form>
+        {formError && <p className={styles.error}>{formError}</p>}
+      </div>
+    </AdminLayout>
   );
 }

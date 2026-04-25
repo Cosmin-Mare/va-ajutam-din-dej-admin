@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import AdminLayout from '@/components/AdminLayout';
 import styles from '@/styles/form.module.css';
-
 
 export default function CreateProject() {
   const [title, setTitle] = useState('');
@@ -23,49 +23,55 @@ export default function CreateProject() {
         router.push('/');
       } else {
         const data = await response.json();
-        setError(data.message || 'Error creating project');
+        setError(data.message || 'Nu s-a putut crea proiectul.');
       }
-    } catch (error) {
-      setError('Error creating project');
+    } catch {
+      setError('A apărut o eroare la crearea proiectului.');
     }
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Create New Project</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.formGroup}>
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="content">Content</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="type">Type</label>
-          <input
-            type="text"
-            id="type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className={styles.submitButton}>Create Project</button>
-      </form>
-      {error && <p className={styles.error}>{error}</p>}
-    </div>
+    <AdminLayout title="Proiect nou">
+      <div className={styles.container}>
+        <h1 className={styles.title}>Proiect nou</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGroup}>
+            <label htmlFor="title">Titlu</label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="content">Descriere / conținut</label>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="type">Tip (ex. social, educație)</label>
+            <input
+              type="text"
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formActions}>
+            <button type="submit" className={styles.submitButton}>
+              Salvează proiectul
+            </button>
+          </div>
+        </form>
+        {error && <p className={styles.error}>{error}</p>}
+      </div>
+    </AdminLayout>
   );
 }

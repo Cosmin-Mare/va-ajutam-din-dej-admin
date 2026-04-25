@@ -3,23 +3,54 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f0f0f0;
+  padding: 1.5rem;
+  background: var(--vad-canvas);
+  background-image: radial-gradient(ellipse 120% 80% at 50% 0%, var(--vad-primary-soft) 0%, transparent 55%);
 }
 
 .loginBox {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 24rem;
+  background: var(--vad-surface);
+  padding: 2rem 1.5rem 1.75rem;
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius-lg);
+  box-shadow: var(--vad-shadow);
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.brand a {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--vad-primary) !important;
+  display: block;
+  line-height: 1.3;
+}
+
+.brand a:hover {
+  color: var(--vad-primary-hover) !important;
+}
+
+.brandSub {
+  font-size: 0.8rem;
+  color: var(--vad-muted);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.15rem;
+  font-weight: 600;
   text-align: center;
+  color: var(--vad-ink);
   margin-bottom: 1.5rem;
+  font-family: var(--font-body);
 }
 
 .formGroup {
@@ -28,37 +59,90 @@
 
 .formGroup label {
   display: block;
-  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--vad-ink);
+  margin-bottom: 0.4rem;
 }
 
 .formGroup input {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius);
+  color: var(--vad-ink);
+  background: var(--vad-surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input::placeholder {
+  color: #adb5bd;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--vad-teal);
+  box-shadow: 0 0 0 3px var(--vad-teal-soft);
 }
 
 .buttonContainer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: stretch;
+  margin-top: 0.5rem;
 }
 
 .button {
-  background-color: #0070f3;
-  color: white;
-  padding: 0.5rem 1rem;
+  width: 100%;
+  background: var(--vad-primary);
+  color: #fff;
+  padding: 0.65rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-body);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--vad-radius);
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: var(--vad-shadow);
+  transition: background 0.2s, transform 0.1s;
 }
 
 .button:hover {
-  background-color: #0051a8;
+  background: var(--vad-primary-hover);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--vad-teal);
+  outline-offset: 2px;
 }
 
 .error {
-  color: #ff0000;
-  font-size: 0.875rem;
+  color: var(--vad-danger);
+  font-size: 0.9rem;
   margin-top: 1rem;
+  text-align: center;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: rgba(200, 35, 51, 0.08);
+  border-radius: var(--vad-radius);
+  border: 1px solid rgba(200, 35, 51, 0.25);
+}
+
+.footerNote {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--vad-border);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--vad-muted);
+}
+
+.footerNote a {
+  font-weight: 600;
+  color: var(--vad-teal-hover) !important;
+}
+
+.footerNote a:hover {
+  color: var(--vad-primary) !important;
 }
