@@ -56,13 +56,13 @@ export default function CreatePost() {
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="link">Link (URL)</label>
+            <label htmlFor="link">Link Facebook (opțional)</label>
             <input
-              type="text"
+              type="url"
               id="link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
-              required
+              placeholder="https://www.facebook.com/…"
             />
           </div>
           <div className={styles.formGroup}>

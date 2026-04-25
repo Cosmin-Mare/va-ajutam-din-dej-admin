@@ -68,13 +68,13 @@ export default function CreateMember() {
             </label>
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="link">Link (ex. rețea socială)</label>
+            <label htmlFor="link">Link Facebook (opțional)</label>
             <input
-              type="text"
+              type="url"
               id="link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
-              required
+              placeholder="https://www.facebook.com/…"
             />
           </div>
           <div className={styles.formActions}>

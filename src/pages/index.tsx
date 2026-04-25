@@ -22,6 +22,7 @@ interface Member {
   name: string;
   status: string;
   is_council: boolean;
+  link: string;
 }
 
 interface ConfirmationPopupProps {
@@ -247,6 +248,16 @@ export default function Home() {
                   <p className={styles.meta}>
                     <strong>Data:</strong> {new Date(post.date).toLocaleDateString('ro-RO')}
                   </p>
+                  <p className={styles.meta}>
+                    <strong>Facebook:</strong>{' '}
+                    {post.link ? (
+                      <a href={post.link} target="_blank" rel="noopener noreferrer">
+                        deschide linkul
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </p>
                   <div className={styles.actions}>
                     <Link href={`/post/edit/${post.id}`}>Editează</Link>
                     <button
@@ -326,6 +337,16 @@ export default function Home() {
                   </p>
                   <p className={styles.meta}>
                     <strong>Membru consiliu:</strong> {member.is_council ? 'Da' : 'Nu'}
+                  </p>
+                  <p className={styles.meta}>
+                    <strong>Facebook:</strong>{' '}
+                    {member.link ? (
+                      <a href={member.link} target="_blank" rel="noopener noreferrer">
+                        deschide linkul
+                      </a>
+                    ) : (
+                      '—'
+                    )}
                   </p>
                   <div className={styles.actions}>
                     <Link href={`/member/edit/${member.id}`}>Editează</Link>
