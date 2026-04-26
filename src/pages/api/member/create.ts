@@ -7,15 +7,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { name, status, is_council, link } = req.body as Record<string, unknown>;
-  if (!name || !status || is_council === undefined) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
+  const nameStr = name != null && String(name).trim() !== "" ? String(name).trim() : "Membru nou";
+  const statusStr = status != null ? String(status) : "";
+  const council =
+    typeof is_council === "boolean"
+      ? is_council
+      : typeof is_council === "string"
+        ? is_council === "1" || is_council.toLowerCase() === "true"
+        : false;
 
   try {
     const newId = await adminCreateMember({
-      name: String(name),
-      status: String(status),
-      is_council: Boolean(is_council),
+      name: nameStr,
+      status: statusStr,
+      is_council: council,
       link: link == null ? "" : String(link),
     });
     return res.status(201).json({ message: "Member created successfully", id: newId });

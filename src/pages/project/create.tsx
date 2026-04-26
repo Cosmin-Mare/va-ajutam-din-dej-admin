@@ -1,76 +1,68 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import AdminLayout from '@/components/AdminLayout';
-import styles from '@/styles/form.module.css';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import AdminLayout from "@/components/AdminLayout";
+import pe from "@/styles/postEditor.module.css";
+import form from "@/styles/form.module.css";
 
 export default function CreateProject() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [type, setType] = useState('');
-  const [error, setError] = useState('');
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const startDraft = async () => {
+    setCreating(true);
+    setError("");
     try {
-      const response = await fetch('/api/project/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, type }),
+      const response = await fetch("/api/project/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
       });
-
       if (response.ok) {
-        router.push('/');
-      } else {
-        const data = await response.json();
-        setError(data.message || 'Nu s-a putut crea proiectul.');
+        const data = (await response.json()) as { id?: number };
+        if (data.id) {
+          void router.push(`/project/edit/${data.id}`);
+          return;
+        }
       }
+      const data = (await response.json().catch(() => ({}))) as { message?: string };
+      setError(data.message || "Nu s-a putut crea proiectul.");
     } catch {
-      setError('A apărut o eroare la crearea proiectului.');
+      setError("Eroare de rețea. Încearcă din nou.");
+    } finally {
+      setCreating(false);
     }
   };
 
   return (
     <AdminLayout title="Proiect nou">
-      <div className={styles.container}>
-        <h1 className={styles.title}>Proiect nou</h1>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="title">Titlu</label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="content">Descriere / conținut</label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="type">Tip (ex. social, educație)</label>
-            <input
-              type="text"
-              id="type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              required
-            />
-          </div>
-          <div className={styles.formActions}>
-            <button type="submit" className={styles.submitButton}>
-              Salvează proiectul
-            </button>
-          </div>
-        </form>
-        {error && <p className={styles.error}>{error}</p>}
+      <div className={pe.pageWrap}>
+        <div className={pe.heroCard}>
+          <h1 className={pe.heroTitle}>Proiect nou</h1>
+          <p className={pe.heroLead}>
+            Se creează un proiect gol și ești dus în editor. Titlul, descrierea și tipul se salvează
+            automat după ce încetezi să tastezi; coperta și galeria sunt în panoul din dreapta.
+          </p>
+          <button
+            type="button"
+            className={pe.primaryCta}
+            onClick={() => void startDraft()}
+            disabled={creating}
+          >
+            {creating ? "Se creează editorul…" : "Deschide editorul"}
+          </button>
+          {error ? (
+            <p className={form.error} role="alert" style={{ marginTop: "1rem" }}>
+              {error}
+            </p>
+          ) : null}
+          <p className={pe.secondaryNote}>
+            <Link href="/" className={pe.linkQuiet}>
+              ← Înapoi la listă fără a crea proiect
+            </Link>
+          </p>
+        </div>
       </div>
     </AdminLayout>
   );

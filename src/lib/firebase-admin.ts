@@ -30,6 +30,15 @@ export function isFirebaseConfigured(): boolean {
   return Boolean(sa && typeof sa.project_id === "string" && sa.project_id.length > 0);
 }
 
+export function getFirebaseProjectId(): string {
+  const fromApp = getApps()[0]?.options?.projectId;
+  if (fromApp) return String(fromApp);
+  const sa = readServiceAccount();
+  const id = sa?.project_id;
+  if (id && typeof id === "string") return id;
+  throw new Error("Could not determine Firebase project id.");
+}
+
 export function getAdminApp(): App {
   const existing = getApps()[0];
   if (existing) return existing;

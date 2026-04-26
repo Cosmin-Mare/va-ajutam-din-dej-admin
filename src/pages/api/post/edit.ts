@@ -10,17 +10,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = Number(body.id);
   const { title, content, link, date } = body;
 
-  if (Number.isNaN(id) || !title || !content || !date) {
+  if (Number.isNaN(id) || date == null || String(date).trim() === "") {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
     const ok = await adminUpdatePost({
       id,
-      title: String(title),
-      content: String(content),
+      title: title == null ? "" : String(title),
+      content: content == null ? "" : String(content),
       link: link == null ? "" : String(link),
-      date: String(date),
+      date: String(date).trim(),
     });
     if (!ok) {
       return res.status(404).json({ message: "Post not found" });

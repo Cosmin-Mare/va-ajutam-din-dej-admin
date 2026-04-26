@@ -7,15 +7,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { title, content, type } = req.body as Record<string, unknown>;
-  if (!title || !content || !type) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
+  const titleTrim =
+    title != null && String(title).trim() !== "" ? String(title).trim() : "Proiect nou";
+  const contentStr = content == null ? "" : String(content);
+  const typeStr =
+    type != null && String(type).trim() !== "" ? String(type).trim() : "p";
 
   try {
     const newId = await adminCreateProject({
-      title: String(title),
-      content: String(content),
-      type: String(type),
+      title: titleTrim,
+      content: contentStr,
+      type: typeStr,
     });
     return res.status(201).json({ message: "Project created successfully", id: newId });
   } catch (e) {

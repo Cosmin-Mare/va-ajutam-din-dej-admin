@@ -10,16 +10,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = Number(body.id);
   const { title, content, type } = body;
 
-  if (Number.isNaN(id) || !title || !content || !type) {
+  if (Number.isNaN(id)) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
     const ok = await adminUpdateProject({
       id,
-      title: String(title),
-      content: String(content),
-      type: String(type),
+      title: title == null ? "" : String(title),
+      content: content == null ? "" : String(content),
+      type: type == null ? "" : String(type),
     });
     if (!ok) {
       return res.status(404).json({ message: "Project not found" });

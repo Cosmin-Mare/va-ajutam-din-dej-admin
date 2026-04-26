@@ -129,6 +129,8 @@ export type AdminPostRow = {
   content: string;
   date: string;
   link: string;
+  thumbnailUrl?: string;
+  galleryUrls?: string[];
 };
 
 export type AdminProjectRow = {
@@ -136,6 +138,8 @@ export type AdminProjectRow = {
   title: string;
   content: string;
   type: string;
+  thumbnailUrl?: string;
+  galleryUrls?: string[];
 };
 
 export type AdminMemberRow = {
@@ -144,6 +148,7 @@ export type AdminMemberRow = {
   status: string;
   is_council: boolean;
   link: string;
+  photoUrl?: string;
 };
 
 function postToRow(p: Post): AdminPostRow {
@@ -153,11 +158,20 @@ function postToRow(p: Post): AdminPostRow {
     content: p.content,
     date: p.date.toISOString(),
     link: p.link,
+    thumbnailUrl: p.thumbnailUrl,
+    galleryUrls: p.galleryUrls,
   };
 }
 
 function projectToRow(p: Project): AdminProjectRow {
-  return { id: p.id, title: p.title, content: p.content, type: String(p.type) };
+  return {
+    id: p.id,
+    title: p.title,
+    content: p.content,
+    type: String(p.type),
+    thumbnailUrl: p.thumbnailUrl,
+    galleryUrls: p.galleryUrls,
+  };
 }
 
 function memberToRow(m: Member): AdminMemberRow {
@@ -167,6 +181,7 @@ function memberToRow(m: Member): AdminMemberRow {
     status: m.status,
     is_council: m.is_council,
     link: m.link ?? "",
+    photoUrl: m.photoUrl,
   };
 }
 
@@ -345,5 +360,73 @@ export async function adminDeleteMember(id: number): Promise<boolean> {
   const snap = await ref.get();
   if (!snap.exists) return false;
   await ref.delete();
+  return true;
+}
+
+export async function loadPostEntity(id: number): Promise<Post | undefined> {
+  const snap = await db().collection(postsCollection()).doc(String(id)).get();
+  if (!snap.exists) return undefined;
+  return docToPost(snap.id, snap.data()!);
+}
+
+export async function loadProjectEntity(id: number): Promise<Project | undefined> {
+  const snap = await db().collection(projectsCollection()).doc(String(id)).get();
+  if (!snap.exists) return undefined;
+  return docToProject(snap.id, snap.data()!);
+}
+
+export async function loadMemberEntity(id: number): Promise<Member | undefined> {
+  const snap = await db().collection(membersCollection()).doc(String(id)).get();
+  if (!snap.exists) return undefined;
+  return docToMember(snap.id, snap.data()!);
+}
+
+export async function setPostMediaFields(id: number, data: { thumbnailUrl?: string | null; galleryUrls?: string[] }): Promise<boolean> {
+  const ref = db().collection(postsCollection()).doc(String(id));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+  const thumbK = postThumbField();
+  const galleryK = postGalleryField();
+  const patch: Record<string, unknown> = {};
+  if ("thumbnailUrl" in data) {
+    const v = data.thumbnailUrl;
+    patch[thumbK] = v == null || v === "" ? FieldValue.delete() : v;
+  }
+  if (data.galleryUrls !== undefined) {
+    patch[galleryK] = data.galleryUrls;
+  }
+  if (Object.keys(patch).length === 0) return true;
+  await ref.update(patch);
+  return true;
+}
+
+export async function setProjectMediaFields(
+  id: number,
+  data: { thumbnailUrl?: string | null; galleryUrls?: string[] }
+): Promise<boolean> {
+  const ref = db().collection(projectsCollection()).doc(String(id));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+  const thumbK = projectThumbField();
+  const galleryK = projectGalleryField();
+  const patch: Record<string, unknown> = {};
+  if ("thumbnailUrl" in data) {
+    const v = data.thumbnailUrl;
+    patch[thumbK] = v == null || v === "" ? FieldValue.delete() : v;
+  }
+  if (data.galleryUrls !== undefined) {
+    patch[galleryK] = data.galleryUrls;
+  }
+  if (Object.keys(patch).length === 0) return true;
+  await ref.update(patch);
+  return true;
+}
+
+export async function setMemberPhotoField(id: number, url: string | null): Promise<boolean> {
+  const ref = db().collection(membersCollection()).doc(String(id));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+  const k = memberPhotoField();
+  await ref.update({ [k]: url == null || url === "" ? FieldValue.delete() : url });
   return true;
 }

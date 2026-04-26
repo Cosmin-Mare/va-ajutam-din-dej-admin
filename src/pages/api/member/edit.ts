@@ -10,16 +10,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const id = Number(body.id);
   const { name, status, is_council, link } = body;
 
-  if (Number.isNaN(id) || !name || !status || is_council === undefined) {
+  if (Number.isNaN(id)) {
     return res.status(400).json({ message: "Missing required fields" });
   }
+
+  const council =
+    typeof is_council === "boolean"
+      ? is_council
+      : typeof is_council === "string"
+        ? is_council === "1" || is_council.toLowerCase() === "true"
+        : false;
 
   try {
     const ok = await adminUpdateMember({
       id,
-      name: String(name),
-      status: String(status),
-      is_council: Boolean(is_council),
+      name: name == null ? "" : String(name),
+      status: status == null ? "" : String(status),
+      is_council: council,
       link: link == null ? "" : String(link),
     });
     if (!ok) {

@@ -1,0 +1,219 @@
+.pageWrap {
+  max-width: 56rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.heroCard {
+  background: var(--vad-surface);
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius-lg);
+  box-shadow: var(--vad-shadow);
+  padding: 1.75rem 1.35rem 2rem;
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--vad-primary) !important;
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
+}
+
+.heroLead {
+  margin: 0 0 1.25rem;
+  color: var(--vad-muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--vad-primary);
+  color: #fff !important;
+  border: none;
+  padding: 0.85rem 1.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border-radius: var(--vad-radius);
+  cursor: pointer;
+  box-shadow: var(--vad-shadow);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.primaryCta:hover:not(:disabled) {
+  background: var(--vad-primary-hover);
+}
+
+.primaryCta:focus-visible {
+  outline: 2px solid var(--vad-teal);
+  outline-offset: 2px;
+}
+
+.primaryCta:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.secondaryNote {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  color: var(--vad-muted);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--vad-surface);
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius-lg);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 3.5rem;
+  z-index: 10;
+}
+
+.toolbarStatus {
+  flex: 1;
+  min-width: 8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--vad-muted);
+}
+
+.toolbarStatusSaving {
+  color: var(--vad-teal-hover);
+}
+
+.toolbarStatusSaved {
+  color: var(--vad-ink);
+}
+
+.toolbarStatusError {
+  color: var(--vad-danger);
+}
+
+.toolbarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.linkQuiet {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--vad-primary) !important;
+  text-decoration: none;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--vad-radius);
+}
+
+.linkQuiet:hover {
+  text-decoration: underline;
+}
+
+.saveNowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vad-teal-hover);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border-radius: var(--vad-radius);
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.saveNowBtn:hover:not(:disabled) {
+  background: var(--vad-primary);
+}
+
+.saveNowBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.layoutGrid {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .layoutGrid {
+    grid-template-columns: 1fr minmax(14rem, 20rem);
+  }
+}
+
+.formCard {
+  background: var(--vad-surface);
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius-lg);
+  box-shadow: var(--vad-shadow);
+  padding: 1.35rem 1.25rem 1.75rem;
+}
+
+.sideCard {
+  background: var(--vad-surface);
+  border: 1px solid var(--vad-border);
+  border-radius: var(--vad-radius-lg);
+  box-shadow: var(--vad-shadow);
+  padding: 1rem 1rem 1.25rem;
+}
+
+.sideCardTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--vad-primary) !important;
+  margin: 0 0 0.35rem;
+}
+
+.sideCardHint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--vad-muted);
+  line-height: 1.45;
+}
+
+.fieldHint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--vad-muted);
+  font-weight: 400;
+}
+
+.contentTextarea {
+  min-height: 280px;
+}
+
+.retryBtn {
+  margin-left: 0.35rem;
+  font-size: inherit;
+  font-weight: 600;
+  background: none;
+  border: none;
+  color: var(--vad-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
+}
+
+.retryBtn:focus-visible {
+  outline: 2px solid var(--vad-teal);
+  outline-offset: 2px;
+}

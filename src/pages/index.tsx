@@ -228,8 +228,9 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 id="sec-posts">Noutăți</h2>
             <p className={styles.sectionIntro}>
-              Articole afișate pe site în secțiunea de noutăți. Click pe <strong>Editează</strong>{' '}
-              pentru a modifica tot textul, linkul sau data.
+              Articole afișate pe site în secțiunea de noutăți. „Postare nouă” deschide editorul cu
+              salvare automată; din listă, <strong>Editează</strong> pentru text, dată, link și
+              imagini.
             </p>
           </div>
           <div className={styles.gallery}>
@@ -277,8 +278,9 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 id="sec-projects">Proiecte</h2>
             <p className={styles.sectionIntro}>
-              Proiecte și inițiative afișate pe site. Tipul (ex. social, educație) poate fi folosit
-              la filtrare pe front-end.
+              Proiecte și inițiative afișate pe site. „Proiect nou” deschide editorul cu salvare
+              automată și imagini în panoul lateral; din listă, <strong>Editează</strong> pentru
+              detalii.
             </p>
           </div>
           <div className={styles.gallery}>
@@ -318,8 +320,9 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 id="sec-members">Membri &amp; echipă</h2>
             <p className={styles.sectionIntro}>
-              Membri afișați în pagina de echipă. Bifa „consiliu” se reflectă pe site dacă este
-              folosită de front-end.
+              Membri afișați în pagina de echipă. „Membru nou” deschide editorul cu salvare
+              automată și fotografie în lateral; bifa „consiliu” și restul câmpurilor se editează acolo
+              sau din <strong>Editează</strong>.
             </p>
           </div>
           <div className={styles.gallery}>
