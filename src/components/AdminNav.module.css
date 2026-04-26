@@ -1,0 +1,115 @@
+.wrapper {
+  width: 100%;
+}
+
+/* Home dashboard: <nav> sits in index .appTopNavRegion (fixed top bar), not a separate sticky band. */
+
+/* Horizontal scroll on narrow viewports: all links stay reachable */
+.listScroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.1rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.listScroll .list {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: max-content;
+  max-width: none;
+  min-width: min(100%, max-content);
+}
+
+@media (min-width: 32rem) {
+  .listScroll {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: visible;
+  }
+  .listScroll .list {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  margin: 0;
+}
+
+.link {
+  display: inline-block;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--vad-muted) !important;
+  text-decoration: none;
+  border-radius: 0.4rem;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--vad-primary) !important;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.active {
+  color: var(--vad-ink) !important;
+  background: rgba(0, 0, 0, 0.06);
+  border-color: var(--vad-border);
+}
+
+/* Home: fill flex region in the fixed top bar */
+.homeBar {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0 0.25rem;
+}
+
+/* Editor: full-width strip (parent topBar is already sticky) */
+.inLayout {
+  border-top: 1px solid var(--vad-border);
+  margin: 0.5rem -1.25rem 0;
+  padding: 0.65rem 1.25rem 0;
+  width: calc(100% + 2.5rem);
+}
+
+.inLayout .list {
+  justify-content: flex-start;
+}
+
+@media (min-width: 640px) {
+  .inLayout {
+    margin: 0.5rem -1.5rem 0;
+    padding: 0.65rem 1.5rem 0;
+    width: calc(100% + 3rem);
+  }
+}
+
+@media (min-width: 48rem) {
+  .inLayout .list {
+    justify-content: center;
+  }
+}

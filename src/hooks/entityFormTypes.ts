@@ -18,6 +18,13 @@ export type ProjectFormPayload = {
   type: string;
 };
 
+export type SponsorPartnerFormPayload = {
+  name: string;
+  websiteUrl: string;
+  role: "sponsor" | "partner";
+  sortKey: number;
+};
+
 export function jsonSerialize<T>(v: T): string {
   return JSON.stringify(v);
 }

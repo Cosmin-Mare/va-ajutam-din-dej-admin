@@ -1,7 +1,7 @@
 .skipLink {
   position: absolute;
   left: -9999px;
-  z-index: 100;
+  z-index: 200;
   padding: 0.5rem 1rem;
   background: var(--vad-surface);
   color: var(--vad-primary) !important;
@@ -22,65 +22,61 @@
   background: var(--vad-canvas);
 }
 
-.masthead {
+/* Single fixed bar: brand, section nav, public site links (replaces masthead + separate sticky nav + create strip) */
+.appTopBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background: var(--vad-surface);
   border-bottom: 1px solid var(--vad-border);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding-top: max(0.35rem, env(safe-area-inset-top, 0px));
 }
 
-.mastheadInner {
-  max-width: var(--max-content);
-  margin: 0 auto;
-  padding: 1.25rem 1.25rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.brandName {
-  font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 4vw, 1.75rem);
-  color: var(--vad-primary) !important;
-  letter-spacing: -0.02em;
-}
-
-.brandName:hover {
-  color: var(--vad-primary-hover) !important;
-}
-
-.brandSub {
-  font-size: 0.95rem;
-  color: var(--vad-muted);
-  font-weight: 500;
-  max-width: 28rem;
-  margin: 0 auto;
-  line-height: 1.4;
-}
-
-.mastheadActions {
+.appTopRow {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1rem;
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  max-width: var(--max-content);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.4rem 1rem 0.15rem;
 }
 
-.mastheadActions a {
-  color: var(--vad-teal-hover) !important;
-  font-weight: 600;
-}
-
-.mastheadActions a:hover {
+.appTopBrand {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
   color: var(--vad-primary) !important;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.appTopNavRegion {
+  flex: 1 1 10rem;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appTopRight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem 0.65rem;
+  font-size: 0.8rem;
+  flex: 0 0 auto;
+}
+
+.appTopExt {
+  font-weight: 600;
+  color: var(--vad-teal-hover) !important;
 }
 
 .container {
@@ -89,6 +85,12 @@
   width: 100%;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
+}
+
+/* After .container: same specificity as .container alone would lose padding-top to the shorthand above */
+.container.mainBelowFixedBar {
+  padding-top: max(6.5rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
+  scroll-margin-top: max(6.5rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
 }
 
 .title {
@@ -108,114 +110,9 @@
   line-height: 1.45;
 }
 
-.sectionNav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  list-style: none;
-}
-
-.sectionNav a {
-  display: inline-block;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--vad-ink) !important;
-  background: var(--vad-surface);
-  border: 1px solid var(--vad-border);
-  border-radius: 999px;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.sectionNav a:hover,
-.sectionNav a:focus-visible {
-  background: var(--vad-teal-soft);
-  border-color: var(--vad-teal);
-  color: var(--vad-teal-hover) !important;
-}
-
-.createStrip {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.75rem;
-  margin-bottom: 2.25rem;
-  padding: 1.25rem;
-  background: var(--vad-surface);
-  border: 1px solid var(--vad-border);
-  border-radius: var(--vad-radius-lg);
-  box-shadow: var(--vad-shadow);
-}
-
-.createStripLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--vad-muted);
-  text-align: center;
-}
-
-.createButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.createButton {
-  display: block;
-  text-align: center;
-  padding: 0.7rem 1.1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #fff !important;
-  background: var(--vad-primary);
-  border: none;
-  border-radius: var(--vad-radius);
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: var(--vad-shadow);
-  transition: background 0.2s, transform 0.15s;
-}
-
-.createButton:hover {
-  background: var(--vad-primary-hover);
-  color: #fff !important;
-}
-
-.createButton:focus-visible {
-  outline: 2px solid var(--vad-teal);
-  outline-offset: 2px;
-}
-
-.createButtonTeal {
-  background: var(--vad-teal);
-  color: #fff !important;
-}
-
-.createButtonTeal:hover {
-  background: var(--vad-teal-hover);
-  color: #fff !important;
-}
-
-@media (min-width: 600px) {
-  .createButtons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .createButton {
-    flex: 1 1 auto;
-    min-width: 9rem;
-  }
-}
-
 .section {
   margin-bottom: 2.75rem;
-  scroll-margin-top: 1rem;
+  scroll-margin-top: 4rem;
 }
 
 .sectionHeader {

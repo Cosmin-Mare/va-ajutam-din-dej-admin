@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import styles from './AdminLayout.module.css';
+import AdminNav from './AdminNav';
 
 type AdminLayoutProps = {
   children: React.ReactNode;
@@ -11,21 +11,21 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     <div className={styles.layout}>
       <header className={styles.topBar}>
         <div className={styles.topBarInner}>
-          <div className={styles.topBarLeft}>
-            <Link href="/" className={styles.backLink}>
-              ← Înapoi la listă
-            </Link>
-            {title ? <span className={styles.breadcrumbTitle}>{title}</span> : null}
+          <div className={styles.topRow}>
+            <div className={styles.topBarLeft}>
+              {title ? <span className={styles.breadcrumbTitle}>{title}</span> : null}
+            </div>
+            <a
+              className={styles.publicSite}
+              href="https://vaajutamdindej.ro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Site public
+              <span aria-hidden className={styles.externalIcon} />
+            </a>
           </div>
-          <a
-            className={styles.publicSite}
-            href="https://vaajutamdindej.ro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Site public
-            <span aria-hidden className={styles.externalIcon} />
-          </a>
+          <AdminNav />
         </div>
       </header>
       <main className={styles.main}>{children}</main>

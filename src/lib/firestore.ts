@@ -5,7 +5,8 @@ import {
   type Timestamp,
 } from "firebase-admin/firestore";
 import { getAdminApp } from "@/lib/firebase-admin";
-import type { Member, Post, Project } from "@/lib/types";
+import { deleteObjectIfInBucket } from "@/lib/storage-admin";
+import type { Member, Post, Project, SponsorPartner } from "@/lib/types";
 
 function postsCollection(): string {
   return process.env.FIRESTORE_POSTS_COLLECTION?.trim() || "posts";
@@ -15,6 +16,12 @@ function projectsCollection(): string {
 }
 function membersCollection(): string {
   return process.env.FIRESTORE_MEMBERS_COLLECTION?.trim() || "members";
+}
+function sponsorPartnersCollection(): string {
+  return process.env.FIRESTORE_SPONSOR_PARTNERS_COLLECTION?.trim() || "sponsor_partners";
+}
+function sponsorLogoField(): string {
+  return process.env.FIRESTORE_SPONSOR_LOGO_FIELD?.trim() || "logoStorageUrl";
 }
 
 function postThumbField(): string {
@@ -60,6 +67,65 @@ function socialUrlFromDoc(data: DocumentData): string {
   const a = pick(fb);
   if (a) return a;
   return pick(legacy);
+}
+
+function pickNonEmptyString(...candidates: unknown[]): string {
+  for (const v of candidates) {
+    if (typeof v === "string" && v.trim() !== "") return v.trim();
+  }
+  return "";
+}
+
+function sponsorRoleFromDoc(data: DocumentData): "sponsor" | "partner" {
+  const raw = data.kind ?? data.category ?? data.role ?? data.group;
+  if (typeof raw === "string") {
+    const s = raw.trim().toLowerCase();
+    if (s === "partner" || s === "partener" || s === "p") return "partner";
+    if (s === "sponsor" || s === "s") return "sponsor";
+  }
+  if (data.isPartner === true || data.partener === true) return "partner";
+  return "sponsor";
+}
+
+function websiteUrlFromDoc(data: DocumentData): string | null {
+  const u = pickNonEmptyString(
+    data.websiteUrl,
+    data.website,
+    data.url,
+    data.externalUrl,
+    data.link
+  );
+  if (!u) return null;
+  if (/^https?:\/\//i.test(u)) return u;
+  return null;
+}
+
+function docToSponsorPartner(id: string, data: DocumentData): SponsorPartner {
+  const logoKey = sponsorLogoField();
+  const logoRaw = data[logoKey];
+  const name = pickNonEmptyString(data.name, data.title, data.companyName) || `ID ${id}`;
+  const orderRaw = data.order ?? data.sortOrder ?? data.rank;
+  const sortKey =
+    typeof orderRaw === "number" && !Number.isNaN(orderRaw)
+      ? orderRaw
+      : typeof orderRaw === "string" && orderRaw.trim() !== ""
+        ? Number.parseFloat(orderRaw) || Number.MAX_SAFE_INTEGER
+        : Number.MAX_SAFE_INTEGER;
+  return {
+    id: Number(id),
+    name,
+    logoUrl: typeof logoRaw === "string" && logoRaw.trim() !== "" ? logoRaw.trim() : undefined,
+    websiteUrl: websiteUrlFromDoc(data),
+    role: sponsorRoleFromDoc(data),
+    sortKey,
+  };
+}
+
+function normalizeWebsiteUrlForStore(raw: string): string | null {
+  const t = raw.trim();
+  if (!t) return null;
+  if (/^https?:\/\//i.test(t)) return t;
+  return `https://${t.replace(/^\/+/, "")}`;
 }
 
 function docToPost(id: string, data: DocumentData): Post {
@@ -151,6 +217,15 @@ export type AdminMemberRow = {
   photoUrl?: string;
 };
 
+export type AdminSponsorPartnerRow = {
+  id: number;
+  name: string;
+  websiteUrl: string;
+  role: "sponsor" | "partner";
+  sortKey: number;
+  logoUrl?: string;
+};
+
 function postToRow(p: Post): AdminPostRow {
   return {
     id: p.id,
@@ -182,6 +257,17 @@ function memberToRow(m: Member): AdminMemberRow {
     is_council: m.is_council,
     link: m.link ?? "",
     photoUrl: m.photoUrl,
+  };
+}
+
+function sponsorToRow(s: SponsorPartner): AdminSponsorPartnerRow {
+  return {
+    id: s.id,
+    name: s.name,
+    websiteUrl: s.websiteUrl ?? "",
+    role: s.role,
+    sortKey: s.sortKey,
+    logoUrl: s.logoUrl,
   };
 }
 
@@ -363,6 +449,106 @@ export async function adminDeleteMember(id: number): Promise<boolean> {
   return true;
 }
 
+/** Next `order` within the same public list (sponsors row vs partners row on /parteneri). */
+async function nextSortKeyForRole(role: "sponsor" | "partner"): Promise<number> {
+  const snap = await db().collection(sponsorPartnersCollection()).get();
+  let max = 0;
+  for (const d of snap.docs) {
+    const row = docToSponsorPartner(d.id, d.data());
+    if (row.role !== role) continue;
+    const sk = row.sortKey;
+    if (sk === Number.MAX_SAFE_INTEGER) continue;
+    if (!Number.isNaN(sk)) max = Math.max(max, sk);
+  }
+  return max + 1;
+}
+
+export async function adminListSponsorPartners(): Promise<AdminSponsorPartnerRow[]> {
+  const snap = await db().collection(sponsorPartnersCollection()).get();
+  const rows = snap.docs.map((d) => docToSponsorPartner(d.id, d.data()));
+  rows.sort((a, b) => {
+    if (a.sortKey !== b.sortKey) return a.sortKey - b.sortKey;
+    return a.id - b.id;
+  });
+  return rows.map(sponsorToRow);
+}
+
+export async function adminGetSponsorPartner(id: number): Promise<AdminSponsorPartnerRow | undefined> {
+  const snap = await db().collection(sponsorPartnersCollection()).doc(String(id)).get();
+  if (!snap.exists) return undefined;
+  return sponsorToRow(docToSponsorPartner(snap.id, snap.data()!));
+}
+
+export async function loadSponsorPartnerEntity(id: number): Promise<SponsorPartner | undefined> {
+  const snap = await db().collection(sponsorPartnersCollection()).doc(String(id)).get();
+  if (!snap.exists) return undefined;
+  return docToSponsorPartner(snap.id, snap.data()!);
+}
+
+export async function adminCreateSponsorPartner(
+  input: { role?: "sponsor" | "partner" } = {}
+): Promise<number> {
+  const id = await nextNumericDocId(sponsorPartnersCollection());
+  const kind: "sponsor" | "partner" = input.role === "partner" ? "partner" : "sponsor";
+  const sortKey = await nextSortKeyForRole(kind);
+  const name = kind === "partner" ? "Partener nou" : "Sponsor nou";
+  await db()
+    .collection(sponsorPartnersCollection())
+    .doc(String(id))
+    .set({
+      name,
+      order: sortKey,
+      kind,
+    });
+  return id;
+}
+
+export async function adminUpdateSponsorPartner(input: {
+  id: number;
+  name: string;
+  websiteUrl: string;
+  role: "sponsor" | "partner";
+  sortKey: number;
+}): Promise<boolean> {
+  const ref = db().collection(sponsorPartnersCollection()).doc(String(input.id));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+  const web = normalizeWebsiteUrlForStore(input.websiteUrl);
+  const sk =
+    typeof input.sortKey === "number" && !Number.isNaN(input.sortKey)
+      ? input.sortKey
+      : Number.MAX_SAFE_INTEGER;
+  await ref.update({
+    name: input.name,
+    order: sk,
+    kind: input.role,
+    ...(web == null
+      ? {
+          websiteUrl: FieldValue.delete(),
+          website: FieldValue.delete(),
+          url: FieldValue.delete(),
+          externalUrl: FieldValue.delete(),
+          link: FieldValue.delete(),
+        }
+      : { websiteUrl: web, link: FieldValue.delete() }),
+  });
+  return true;
+}
+
+export async function adminDeleteSponsorPartner(id: number): Promise<boolean> {
+  const entity = await loadSponsorPartnerEntity(id);
+  if (!entity) return false;
+  if (entity.logoUrl) {
+    try {
+      await deleteObjectIfInBucket(entity.logoUrl);
+    } catch {
+      /* best-effort */
+    }
+  }
+  await db().collection(sponsorPartnersCollection()).doc(String(id)).delete();
+  return true;
+}
+
 export async function loadPostEntity(id: number): Promise<Post | undefined> {
   const snap = await db().collection(postsCollection()).doc(String(id)).get();
   if (!snap.exists) return undefined;
@@ -427,6 +613,15 @@ export async function setMemberPhotoField(id: number, url: string | null): Promi
   const snap = await ref.get();
   if (!snap.exists) return false;
   const k = memberPhotoField();
+  await ref.update({ [k]: url == null || url === "" ? FieldValue.delete() : url });
+  return true;
+}
+
+export async function setSponsorPartnerLogoField(id: number, url: string | null): Promise<boolean> {
+  const ref = db().collection(sponsorPartnersCollection()).doc(String(id));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+  const k = sponsorLogoField();
   await ref.update({ [k]: url == null || url === "" ? FieldValue.delete() : url });
   return true;
 }

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styles from './index.module.css';
 import Link from 'next/link';
+import AdminNav, { HOME_FIXED_HEADER_ID } from '@/components/AdminNav';
 
 interface Post {
   id: number;
@@ -23,6 +24,15 @@ interface Member {
   status: string;
   is_council: boolean;
   link: string;
+}
+
+interface SponsorPartner {
+  id: number;
+  name: string;
+  websiteUrl: string;
+  role: 'sponsor' | 'partner';
+  sortKey: number;
+  logoUrl?: string;
 }
 
 interface ConfirmationPopupProps {
@@ -57,10 +67,55 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
   );
 };
 
+type SPRow = SponsorPartner;
+function PartnerSponsorItem({
+  sp,
+  onDeleteClick,
+}: {
+  sp: SPRow;
+  onDeleteClick: (id: number) => void;
+}) {
+  return (
+    <article className={styles.item}>
+      <h3>{sp.name}</h3>
+      <p className={styles.meta}>
+        <strong>Ordine:</strong> {sp.sortKey}
+      </p>
+      <p className={styles.meta}>
+        <strong>Site:</strong>{' '}
+        {sp.websiteUrl ? (
+          <a href={sp.websiteUrl} target="_blank" rel="noopener noreferrer">
+            {sp.websiteUrl}
+          </a>
+        ) : (
+          '—'
+        )}
+      </p>
+      {sp.logoUrl ? (
+        <p className={styles.meta}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={sp.logoUrl}
+            alt=""
+            style={{ maxHeight: 48, maxWidth: 160, objectFit: 'contain' }}
+          />
+        </p>
+      ) : null}
+      <div className={styles.actions}>
+        <Link href={`/sponsor-partner/edit/${sp.id}`}>Editează</Link>
+        <button type="button" onClick={() => onDeleteClick(sp.id)}>
+          Șterge
+        </button>
+      </div>
+    </article>
+  );
+}
+
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [sponsorPartners, setSponsorPartners] = useState<SponsorPartner[]>([]);
   const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     message: string;
@@ -71,10 +126,20 @@ export default function Home() {
     onConfirm: () => {},
   });
 
+  const sponsorsList = useMemo(
+    () => sponsorPartners.filter((r) => r.role === 'sponsor'),
+    [sponsorPartners]
+  );
+  const partnersList = useMemo(
+    () => sponsorPartners.filter((r) => r.role === 'partner'),
+    [sponsorPartners]
+  );
+
   useEffect(() => {
     fetchPosts();
     fetchProjects();
     fetchMembers();
+    fetchSponsorPartners();
   }, []);
 
   const fetchPosts = async () => {
@@ -110,6 +175,18 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error fetching members:', error);
+    }
+  };
+
+  const fetchSponsorPartners = async () => {
+    try {
+      const response = await fetch('/api/sponsor-partner/get-all');
+      if (response.ok) {
+        const data = (await response.json()) as SponsorPartner[];
+        setSponsorPartners(data);
+      }
+    } catch (error) {
+      console.error('Error fetching sponsors/partners:', error);
     }
   };
 
@@ -165,64 +242,61 @@ export default function Home() {
     }
   };
 
+  const deleteSponsorPartner = async (id: number) => {
+    try {
+      const response = await fetch(`/api/sponsor-partner/delete?id=${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setSponsorPartners((prev) => prev.filter((row) => row.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting sponsor/partener:', error);
+    }
+  };
+
   return (
     <div className={styles.appShell}>
       <a href="#main-content" className={styles.skipLink}>
         Sari la conținut
       </a>
-      <header className={styles.masthead}>
-        <div className={styles.mastheadInner}>
-          <div className={styles.brand}>
-            <Link href="/" className={styles.brandName}>
-              Vă Ajutăm din Dej
-            </Link>
-            <p className={styles.brandSub}>Panou de administrare — noutăți, proiecte și echipă</p>
+      <header className={styles.appTopBar} id={HOME_FIXED_HEADER_ID}>
+        <div className={styles.appTopRow}>
+          <Link href="/" className={styles.appTopBrand}>
+            Vă Ajutăm din Dej
+          </Link>
+          <div className={styles.appTopNavRegion}>
+            <AdminNav variant="home" />
           </div>
-          <div className={styles.mastheadActions}>
-            <a href="https://vaajutamdindej.ro" target="_blank" rel="noopener noreferrer">
-              Deschide site-ul public
+          <div className={styles.appTopRight}>
+            <a
+              className={styles.appTopExt}
+              href="https://vaajutamdindej.ro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Site public
             </a>
-            <span aria-hidden>·</span>
-            <a href="https://vaajutamdindej.ro/cum-pot-ajuta" target="_blank" rel="noopener noreferrer">
+            <a
+              className={styles.appTopExt}
+              href="https://vaajutamdindej.ro/cum-pot-ajuta"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Cum poți ajuta
             </a>
           </div>
         </div>
       </header>
 
-      <div id="main-content" className={styles.container}>
+      <div id="main-content" className={`${styles.container} ${styles.mainBelowFixedBar}`}>
         <h1 className={styles.title}>Gestionare conținut</h1>
         <p className={styles.subtitle}>
-          Editează sau șterge postări, proiecte și membri. Folosește butoanele de mai jos pentru a
-          adăuga conținut nou.
+          Editează sau șterge conținutul din secțiunile de mai jos. Pentru înregistrări noi, folosește
+          rutele de create din editor:{' '}
+          <Link href="/post/create">noutate</Link>, <Link href="/project/create">proiect</Link>,{' '}
+          <Link href="/member/create">membru</Link>,{' '}
+          <Link href="/sponsor-partner/create?role=sponsor">sponsor</Link>,{' '}
+          <Link href="/sponsor-partner/create?role=partner">partener</Link>.
         </p>
-
-        <ul className={styles.sectionNav} aria-label="Secțiuni">
-          <li>
-            <a href="#posts">Noutăți (blog)</a>
-          </li>
-          <li>
-            <a href="#projects">Proiecte</a>
-          </li>
-          <li>
-            <a href="#members">Membri / echipă</a>
-          </li>
-        </ul>
-
-        <div className={styles.createStrip}>
-          <span className={styles.createStripLabel}>Conținut nou</span>
-          <div className={styles.createButtons}>
-            <Link href="/post/create" className={styles.createButton}>
-              Postare nouă
-            </Link>
-            <Link href="/project/create" className={`${styles.createButton} ${styles.createButtonTeal}`}>
-              Proiect nou
-            </Link>
-            <Link href="/member/create" className={styles.createButton}>
-              Membru nou
-            </Link>
-          </div>
-        </div>
 
         <section id="posts" className={styles.section} aria-labelledby="sec-posts">
           <div className={styles.sectionHeader}>
@@ -361,6 +435,63 @@ export default function Home() {
                     </button>
                   </div>
                 </article>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section id="sponsors" className={styles.section} aria-labelledby="sec-sponsors">
+          <div className={styles.sectionHeader}>
+            <h2 id="sec-sponsors">Sponsori</h2>
+            <p className={styles.sectionIntro}>
+              Logo-uri în grila <strong>Sponsori</strong> de pe <strong>/parteneri</strong> (părți de
+              sus a paginii când conținutul vine din Firestore). Ordinea e separată de cea a
+              partenerilor.
+            </p>
+          </div>
+          <div className={styles.gallery}>
+            {sponsorsList.length === 0 ? (
+              <div className={styles.empty}>
+                <strong>Nu există sponsori în listă.</strong> Adaugă un sponsor sau, dacă nu există
+                niciun rând în colecție, site-ul poate arăta varianta statică a paginii.
+              </div>
+            ) : (
+              sponsorsList.map((sp) => (
+                <PartnerSponsorItem
+                  key={sp.id}
+                  sp={sp}
+                  onDeleteClick={(id) =>
+                    showDeleteConfirmation('sponsor', id, deleteSponsorPartner)
+                  }
+                />
+              ))
+            )}
+          </div>
+        </section>
+
+        <section id="partners" className={styles.section} aria-labelledby="sec-partners">
+          <div className={styles.sectionHeader}>
+            <h2 id="sec-partners">Parteneri</h2>
+            <p className={styles.sectionIntro}>
+              Asociații și organizații din grila <strong>Parteneri</strong> (jumătatea de jos a paginii
+              publice). Ordine și coloană separată față de sponsori.
+            </p>
+          </div>
+          <div className={styles.gallery}>
+            {partnersList.length === 0 ? (
+              <div className={styles.empty}>
+                <strong>Nu există parteneri în listă.</strong> Adaugă un partener aici; tipul (sponsor
+                vs partener) poți alege și în editor.
+              </div>
+            ) : (
+              partnersList.map((sp) => (
+                <PartnerSponsorItem
+                  key={sp.id}
+                  sp={sp}
+                  onDeleteClick={(id) =>
+                    showDeleteConfirmation('partener', id, deleteSponsorPartner)
+                  }
+                />
               ))
             )}
           </div>

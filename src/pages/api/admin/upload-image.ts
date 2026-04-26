@@ -4,9 +4,11 @@ import {
   loadMemberEntity,
   loadPostEntity,
   loadProjectEntity,
+  loadSponsorPartnerEntity,
   setMemberPhotoField,
   setPostMediaFields,
   setProjectMediaFields,
+  setSponsorPartnerLogoField,
 } from "@/lib/firestore";
 import {
   contentTypeFromName,
@@ -24,24 +26,38 @@ export const config = {
   },
 };
 
-type Entity = "post" | "project" | "member";
-type MediaField = "thumbnail" | "gallery" | "photo";
+type Entity = "post" | "project" | "member" | "sponsor_partner";
+type MediaField = "thumbnail" | "gallery" | "photo" | "logo";
 
 function assertEntity(v: unknown): Entity {
-  if (v === "post" || v === "project" || v === "member") return v;
+  if (v === "post" || v === "project" || v === "member" || v === "sponsor_partner") return v;
   throw new Error("Tip invalid");
 }
 
 function assertField(v: unknown, entity: Entity): MediaField {
-  if (v === "thumbnail" || v === "gallery" || v === "photo") {
+  if (v === "thumbnail" || v === "gallery" || v === "photo" || v === "logo") {
     if (entity === "member" && v !== "photo") {
       throw new Error("Pentru membri, folosește field=photo");
+    }
+    if (entity === "sponsor_partner" && v !== "logo") {
+      throw new Error("Pentru sponsori/parteneri, folosește field=logo");
+    }
+    if (entity === "post" || entity === "project") {
+      if (v === "photo" || v === "logo") {
+        throw new Error("field invalid pentru postare/proiect");
+      }
     }
     if (entity !== "member" && v === "photo") {
       throw new Error("field=photo e doar pentru membri");
     }
+    if (entity !== "sponsor_partner" && v === "logo") {
+      throw new Error("field=logo e doar pentru sponsori/parteneri");
+    }
     if (v === "gallery" && entity === "member") {
       throw new Error("Galeria nu se aplică membrilor");
+    }
+    if (v === "gallery" && entity === "sponsor_partner") {
+      throw new Error("Galeria nu se aplică sponsorilor");
     }
     return v;
   }
@@ -123,6 +139,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       gallery.push(downloadUrl);
       await setProjectMediaFields(id, { galleryUrls: gallery });
       return res.status(201).json({ downloadUrl, field: "gallery" });
+    }
+
+    if (entity === "sponsor_partner") {
+      const sp = await loadSponsorPartnerEntity(id);
+      if (!sp) return res.status(404).json({ message: "Sponsor/partener negăsit" });
+      if (sp.logoUrl) await deleteObjectIfInBucket(sp.logoUrl);
+      const { downloadUrl } = await uploadImageBuffer(
+        `sponsor_partners/${id}/logo${ext}`,
+        buf,
+        contentType
+      );
+      await setSponsorPartnerLogoField(id, downloadUrl);
+      return res.status(201).json({ downloadUrl, field: "logo" });
     }
 
     const member = await loadMemberEntity(id);

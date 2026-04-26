@@ -25,3 +25,14 @@ export type Project = {
   thumbnailUrl?: string;
   galleryUrls?: string[];
 };
+
+/** Aligned with public site `SponsorPartner` / `sponsor_partners` in Firestore. */
+export type SponsorPartner = {
+  id: number;
+  name: string;
+  /** Firebase Storage download URL (`logoStorageUrl` in Firestore). */
+  logoUrl?: string;
+  websiteUrl: string | null;
+  role: "sponsor" | "partner";
+  sortKey: number;
+};

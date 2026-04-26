@@ -4,13 +4,15 @@ import {
   loadMemberEntity,
   loadPostEntity,
   loadProjectEntity,
+  loadSponsorPartnerEntity,
   setMemberPhotoField,
   setPostMediaFields,
   setProjectMediaFields,
+  setSponsorPartnerLogoField,
 } from "@/lib/firestore";
 import { deleteObjectIfInBucket } from "@/lib/storage-admin";
 
-type Entity = "post" | "project" | "member";
+type Entity = "post" | "project" | "member" | "sponsor_partner";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -22,7 +24,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const body = req.body as Record<string, unknown>;
   const entity = body.entity;
-  if (entity !== "post" && entity !== "project" && entity !== "member") {
+  if (
+    entity !== "post" &&
+    entity !== "project" &&
+    entity !== "member" &&
+    entity !== "sponsor_partner"
+  ) {
     return res.status(400).json({ message: "entity invalid" });
   }
   const id = Number(body.id);
@@ -74,6 +81,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json({ message: "ok" });
       }
       return res.status(400).json({ message: "field trebuie să fie thumbnail sau gallery" });
+    }
+
+    if (entity === "sponsor_partner") {
+      if (field && field !== "logo") {
+        return res.status(400).json({ message: "Pentru sponsor/partener folosește field=logo" });
+      }
+      const sp = await loadSponsorPartnerEntity(id);
+      if (!sp) return res.status(404).json({ message: "Sponsor/partener negăsit" });
+      if (sp.logoUrl) await deleteObjectIfInBucket(sp.logoUrl);
+      await setSponsorPartnerLogoField(id, null);
+      return res.status(200).json({ message: "ok" });
     }
 
     if (field && field !== "photo") {
