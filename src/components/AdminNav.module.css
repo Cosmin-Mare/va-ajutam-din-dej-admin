@@ -2,40 +2,226 @@
   width: 100%;
 }
 
-/* Home dashboard: <nav> sits in index .appTopNavRegion (fixed top bar), not a separate sticky band. */
+/* --- Mobile: hamburger + collapsible panel (default < 40rem) --- */
 
-/* Horizontal scroll on narrow viewports: all links stay reachable */
-.listScroll {
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 0.1rem;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+.navInner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  width: 100%;
+  min-width: 0;
 }
 
-.listScroll .list {
-  flex-wrap: nowrap;
+.menuToggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-end;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--vad-border);
+  border-radius: 0.5rem;
+  background: var(--vad-surface);
+  cursor: pointer;
+  color: var(--vad-ink);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.menuToggle:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--vad-primary);
+}
+
+.menuToggle:focus-visible {
+  outline: 2px solid var(--vad-primary);
+  outline-offset: 2px;
+}
+
+.menuToggleLines {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.menuToggleLine {
+  display: block;
+  width: 1.15rem;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.menuToggleOpen .menuToggleLine:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menuToggleOpen .menuToggleLine:nth-child(2) {
+  opacity: 0;
+}
+
+.menuToggleOpen .menuToggleLine:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    max-height 0.28s ease-out,
+    opacity 0.2s ease-out,
+    visibility 0s linear 0.28s;
+}
+
+.panelOpen {
+  max-height: min(70vh, 28rem);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    max-height 0.32s ease-out,
+    opacity 0.22s ease-out,
+    visibility 0s linear 0s;
+}
+
+.panelInner {
+  padding-top: 0.15rem;
+  padding-bottom: 0.35rem;
+  border-radius: 0.5rem;
+  background: var(--vad-surface);
+}
+
+/* Mobile list: vertical, full-width taps */
+.panel .list {
+  flex-direction: column;
+  align-items: stretch;
   justify-content: flex-start;
-  width: max-content;
-  max-width: none;
-  min-width: min(100%, max-content);
+  gap: 0.25rem;
 }
 
-@media (min-width: 32rem) {
-  .listScroll {
+.panel .link {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  white-space: normal;
+}
+
+/* Mobile dropdown surface (home + editor layouts) */
+@media (max-width: 39.99rem) {
+  .homeBar .panelInner,
+  .inLayout .panelInner {
+    border: 1px solid var(--vad-border);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* --- Desktop (≥ 40rem): inline nav, no toggle --- */
+
+@media (min-width: 40rem) {
+  .navInner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .menuToggle {
+    display: none;
+  }
+
+  .panel {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-height: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible;
+    transition: none;
+  }
+
+  .panelInner {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .panel .list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem 0.6rem;
+  }
+
+  .panel .link {
+    display: inline-block;
+    width: auto;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+/* Home dashboard: horizontal scroll / wrap on desktop inside panel */
+.listWrapHome {
+  max-width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .listWrapHome {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.2rem;
     margin-left: 0;
     margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
-    overflow-x: visible;
+    scrollbar-width: thin;
   }
-  .listScroll .list {
-    flex-wrap: wrap;
+
+  .listWrapHome::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .listWrapHome::-webkit-scrollbar-thumb {
+    background: var(--vad-border);
+    border-radius: 3px;
+  }
+
+  .listWrapHome .list {
+    flex-wrap: nowrap;
     justify-content: center;
+    width: max-content;
+    max-width: none;
+    min-width: min(100%, max-content);
+  }
+}
+
+@media (min-width: 52rem) {
+  .listWrapHome .list {
+    flex-wrap: wrap;
     width: 100%;
   }
 }
@@ -45,7 +231,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem 0.5rem;
+  gap: 0.45rem 0.6rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -57,15 +243,22 @@
 
 .link {
   display: inline-block;
-  padding: 0.45rem 0.8rem;
-  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
   font-weight: 600;
+  line-height: 1.2;
   color: var(--vad-muted) !important;
   text-decoration: none;
-  border-radius: 0.4rem;
+  border-radius: 0.5rem;
   border: 1px solid transparent;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
   white-space: nowrap;
+}
+
+@media (min-width: 40rem) {
+  .link {
+    padding: 0.65rem 1.1rem;
+  }
 }
 
 .link:hover {
@@ -79,37 +272,48 @@
   border-color: var(--vad-border);
 }
 
-/* Home: fill flex region in the fixed top bar */
+/* Home: full width in header; parent controls padding */
 .homeBar {
   width: 100%;
   max-width: none;
   margin: 0;
   box-sizing: border-box;
-  padding: 0 0.25rem;
+  padding: 0;
 }
 
-/* Editor: full-width strip (parent topBar is already sticky) */
+/* Editor: full-bleed strip aligned with topBarInner horizontal padding */
 .inLayout {
+  align-self: stretch;
+  box-sizing: border-box;
   border-top: 1px solid var(--vad-border);
-  margin: 0.5rem -1.25rem 0;
-  padding: 0.65rem 1.25rem 0;
-  width: calc(100% + 2.5rem);
+  margin-top: 0.5rem;
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  padding: 0.75rem 1.25rem 0.15rem;
+  width: auto;
+  min-width: 0;
 }
 
-.inLayout .list {
+.inLayout .navInner {
+  align-items: stretch;
+}
+
+.inLayout .panel .list {
   justify-content: flex-start;
 }
 
 @media (min-width: 640px) {
   .inLayout {
-    margin: 0.5rem -1.5rem 0;
-    padding: 0.65rem 1.5rem 0;
-    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.8rem;
   }
 }
 
 @media (min-width: 48rem) {
-  .inLayout .list {
+  .inLayout .panel .list {
     justify-content: center;
   }
 }

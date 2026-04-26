@@ -15,15 +15,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             <div className={styles.topBarLeft}>
               {title ? <span className={styles.breadcrumbTitle}>{title}</span> : null}
             </div>
-            <a
-              className={styles.publicSite}
-              href="https://vaajutamdindej.ro"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Site public
-              <span aria-hidden className={styles.externalIcon} />
-            </a>
           </div>
           <AdminNav />
         </div>

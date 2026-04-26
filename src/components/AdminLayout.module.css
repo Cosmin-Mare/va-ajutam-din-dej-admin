@@ -17,7 +17,7 @@
 .topBarInner {
   max-width: var(--max-content);
   margin: 0 auto;
-  padding: 0.75rem 1.25rem 0.25rem;
+  padding: 0.85rem 1.25rem 0.35rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -27,11 +27,11 @@
 .topRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
   width: 100%;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
 }
 
 .topBarLeft {
@@ -60,31 +60,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 50vw;
-}
-
-.publicSite {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--vad-teal-hover) !important;
-  white-space: nowrap;
-}
-
-.publicSite:hover {
-  color: var(--vad-primary) !important;
-}
-
-/* small “external” cue without extra deps */
-.externalIcon {
-  display: inline-block;
-  width: 0.55rem;
-  height: 0.55rem;
-  border-top: 1.5px solid currentColor;
-  border-right: 1.5px solid currentColor;
-  transform: rotate(45deg) translate(0, 0.05rem);
-  opacity: 0.85;
 }
 
 .main {

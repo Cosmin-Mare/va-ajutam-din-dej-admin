@@ -35,48 +35,66 @@
   padding-top: max(0.35rem, env(safe-area-inset-top, 0px));
 }
 
+.appTopInner {
+  max-width: var(--max-content);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.55rem 1rem 0.45rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
 .appTopRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.5rem 0.75rem;
-  max-width: var(--max-content);
   width: 100%;
-  margin: 0 auto;
-  padding: 0.4rem 1rem 0.15rem;
+  min-width: 0;
 }
 
 .appTopBrand {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(1rem, 2.8vw, 1.15rem);
   color: var(--vad-primary) !important;
   white-space: nowrap;
   flex: 0 0 auto;
+  letter-spacing: -0.02em;
 }
 
 .appTopNavRegion {
-  flex: 1 1 10rem;
+  width: 100%;
   min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-.appTopRight {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.4rem 0.65rem;
-  font-size: 0.8rem;
-  flex: 0 0 auto;
+@media (min-width: 52rem) {
+  .appTopInner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    padding: 0.65rem 1.25rem 0.55rem;
+  }
+
+  .appTopNavRegion {
+    flex: 1 1 auto;
+    width: auto;
+    justify-content: center;
+  }
 }
 
-.appTopExt {
-  font-weight: 600;
-  color: var(--vad-teal-hover) !important;
+@media (min-width: 640px) {
+  .appTopInner {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
 }
 
 .container {
@@ -89,8 +107,27 @@
 
 /* After .container: same specificity as .container alone would lose padding-top to the shorthand above */
 .container.mainBelowFixedBar {
-  padding-top: max(6.5rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
-  scroll-margin-top: max(6.5rem, calc(4.25rem + env(safe-area-inset-top, 0px)));
+  padding-top: max(
+    7.75rem,
+    calc(5.5rem + env(safe-area-inset-top, 0px))
+  );
+  scroll-margin-top: max(
+    7.75rem,
+    calc(5.5rem + env(safe-area-inset-top, 0px))
+  );
+}
+
+@media (min-width: 52rem) {
+  .container.mainBelowFixedBar {
+    padding-top: max(
+      5.5rem,
+      calc(4rem + env(safe-area-inset-top, 0px))
+    );
+    scroll-margin-top: max(
+      5.5rem,
+      calc(4rem + env(safe-area-inset-top, 0px))
+    );
+  }
 }
 
 .title {
@@ -112,7 +149,13 @@
 
 .section {
   margin-bottom: 2.75rem;
-  scroll-margin-top: 4rem;
+  scroll-margin-top: max(5rem, calc(3.5rem + env(safe-area-inset-top, 0px)));
+}
+
+@media (min-width: 52rem) {
+  .section {
+    scroll-margin-top: max(4.25rem, calc(3rem + env(safe-area-inset-top, 0px)));
+  }
 }
 
 .sectionHeader {

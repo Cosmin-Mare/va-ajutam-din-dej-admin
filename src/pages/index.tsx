@@ -259,30 +259,14 @@ export default function Home() {
         Sari la conținut
       </a>
       <header className={styles.appTopBar} id={HOME_FIXED_HEADER_ID}>
-        <div className={styles.appTopRow}>
-          <Link href="/" className={styles.appTopBrand}>
-            Vă Ajutăm din Dej
-          </Link>
+        <div className={styles.appTopInner}>
+          <div className={styles.appTopRow}>
+            <Link href="/" className={styles.appTopBrand}>
+              Vă Ajutăm din Dej
+            </Link>
+          </div>
           <div className={styles.appTopNavRegion}>
             <AdminNav variant="home" />
-          </div>
-          <div className={styles.appTopRight}>
-            <a
-              className={styles.appTopExt}
-              href="https://vaajutamdindej.ro"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Site public
-            </a>
-            <a
-              className={styles.appTopExt}
-              href="https://vaajutamdindej.ro/cum-pot-ajuta"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Cum poți ajuta
-            </a>
           </div>
         </div>
       </header>
