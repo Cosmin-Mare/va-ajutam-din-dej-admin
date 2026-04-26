@@ -186,6 +186,9 @@ export default function EditProject() {
             <Link href="/" className={pe.linkQuiet}>
               ← Listă
             </Link>
+            <Link href="/project/create" className={pe.linkQuiet}>
+              + Proiect nou
+            </Link>
             <button
               type="submit"
               form="vad-project-form"

@@ -285,17 +285,23 @@ export default function Home() {
       <div id="main-content" className={`${styles.container} ${styles.mainBelowFixedBar}`}>
         <h1 className={styles.title}>Gestionare conținut</h1>
         <p className={styles.subtitle}>
-          Editează sau șterge conținutul din secțiunile de mai jos. Pentru înregistrări noi, folosește
-          rutele de create din editor:{' '}
+          Editează sau șterge din listele de mai jos. Pentru înregistrări noi, folosește butonul din
+          antetul fiecărei secțiuni (sau linkurile rapide:{' '}
           <Link href="/post/create">noutate</Link>, <Link href="/project/create">proiect</Link>,{' '}
           <Link href="/member/create">membru</Link>,{' '}
           <Link href="/sponsor-partner/create?role=sponsor">sponsor</Link>,{' '}
-          <Link href="/sponsor-partner/create?role=partner">partener</Link>.
+          <Link href="/sponsor-partner/create?role=partner">partener</Link>
+          ).
         </p>
 
         <section id="posts" className={styles.section} aria-labelledby="sec-posts">
           <div className={styles.sectionHeader}>
-            <h2 id="sec-posts">Noutăți</h2>
+            <div className={styles.sectionHeaderTop}>
+              <h2 id="sec-posts">Noutăți</h2>
+              <Link href="/post/create" className={styles.createNewLink}>
+                + Postare nouă
+              </Link>
+            </div>
             <p className={styles.sectionIntro}>
               Articole afișate pe site în secțiunea de noutăți. „Postare nouă” deschide editorul cu
               salvare automată; din listă, <strong>Editează</strong> pentru text, dată, link și
@@ -350,7 +356,12 @@ export default function Home() {
 
         <section id="projects" className={styles.section} aria-labelledby="sec-projects">
           <div className={styles.sectionHeader}>
-            <h2 id="sec-projects">Proiecte</h2>
+            <div className={styles.sectionHeaderTop}>
+              <h2 id="sec-projects">Proiecte</h2>
+              <Link href="/project/create" className={styles.createNewLink}>
+                + Proiect nou
+              </Link>
+            </div>
             <p className={styles.sectionIntro}>
               Proiecte și inițiative afișate pe site. „Proiect nou” deschide editorul cu salvare
               automată și imagini în panoul lateral; din listă, <strong>Editează</strong> pentru
@@ -397,7 +408,12 @@ export default function Home() {
 
         <section id="members" className={styles.section} aria-labelledby="sec-members">
           <div className={styles.sectionHeader}>
-            <h2 id="sec-members">Membri &amp; echipă</h2>
+            <div className={styles.sectionHeaderTop}>
+              <h2 id="sec-members">Membri &amp; echipă</h2>
+              <Link href="/member/create" className={styles.createNewLink}>
+                + Membru nou
+              </Link>
+            </div>
             <p className={styles.sectionIntro}>
               Membri afișați în pagina de echipă. „Membru nou” deschide editorul cu salvare
               automată și fotografie în lateral; bifa „consiliu” și restul câmpurilor se editează acolo
@@ -452,7 +468,15 @@ export default function Home() {
 
         <section id="sponsors" className={styles.section} aria-labelledby="sec-sponsors">
           <div className={styles.sectionHeader}>
-            <h2 id="sec-sponsors">Sponsori</h2>
+            <div className={styles.sectionHeaderTop}>
+              <h2 id="sec-sponsors">Sponsori</h2>
+              <Link
+                href="/sponsor-partner/create?role=sponsor"
+                className={styles.createNewLink}
+              >
+                + Sponsor nou
+              </Link>
+            </div>
             <p className={styles.sectionIntro}>
               Logo-uri în grila <strong>Sponsori</strong> de pe <strong>/parteneri</strong> (părți de
               sus a paginii când conținutul vine din Firestore). Ordinea e separată de cea a
@@ -486,7 +510,15 @@ export default function Home() {
 
         <section id="partners" className={styles.section} aria-labelledby="sec-partners">
           <div className={styles.sectionHeader}>
-            <h2 id="sec-partners">Parteneri</h2>
+            <div className={styles.sectionHeaderTop}>
+              <h2 id="sec-partners">Parteneri</h2>
+              <Link
+                href="/sponsor-partner/create?role=partner"
+                className={styles.createNewLink}
+              >
+                + Partener nou
+              </Link>
+            </div>
             <p className={styles.sectionIntro}>
               Asociații și organizații din grila <strong>Parteneri</strong> (jumătatea de jos a paginii
               publice). Ordine și coloană separată față de sponsori.

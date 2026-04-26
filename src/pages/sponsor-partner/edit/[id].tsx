@@ -202,6 +202,12 @@ export default function EditSponsorPartner() {
             <Link href="/" className={pe.linkQuiet}>
               ← Listă
             </Link>
+            <Link href="/sponsor-partner/create?role=sponsor" className={pe.linkQuiet}>
+              + Sponsor nou
+            </Link>
+            <Link href="/sponsor-partner/create?role=partner" className={pe.linkQuiet}>
+              + Partener nou
+            </Link>
             <button
               type="submit"
               form="vad-sponsor-form"

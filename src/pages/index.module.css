@@ -205,6 +205,46 @@
   border-bottom: 2px solid var(--vad-primary);
 }
 
+.sectionHeaderTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.sectionHeaderTop h2 {
+  margin: 0;
+}
+
+.createNewLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  text-decoration: none;
+  white-space: nowrap;
+  color: #fff !important;
+  background: var(--vad-primary);
+  border-radius: var(--vad-radius);
+  box-shadow: var(--vad-shadow);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.createNewLink:hover {
+  background: var(--vad-primary-hover);
+  color: #fff !important;
+}
+
+.createNewLink:focus-visible {
+  outline: 2px solid var(--vad-teal);
+  outline-offset: 2px;
+}
+
 .section h2,
 .sectionHeader h2 {
   font-size: 1.35rem;

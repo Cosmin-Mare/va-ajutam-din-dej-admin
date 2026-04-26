@@ -183,6 +183,9 @@ export default function EditPost() {
             <Link href="/" className={pe.linkQuiet}>
               ← Listă
             </Link>
+            <Link href="/post/create" className={pe.linkQuiet}>
+              + Postare nouă
+            </Link>
             <button
               type="submit"
               form="vad-post-form"

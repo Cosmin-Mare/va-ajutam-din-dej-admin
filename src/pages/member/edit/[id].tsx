@@ -202,6 +202,9 @@ export default function EditMember() {
             <Link href="/" className={pe.linkQuiet}>
               ← Listă
             </Link>
+            <Link href="/member/create" className={pe.linkQuiet}>
+              + Membru nou
+            </Link>
             <button
               type="submit"
               form="vad-member-form"
