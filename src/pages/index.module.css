@@ -108,24 +108,38 @@
 /* After .container: same specificity as .container alone would lose padding-top to the shorthand above */
 .container.mainBelowFixedBar {
   padding-top: max(
-    7.75rem,
-    calc(5.5rem + env(safe-area-inset-top, 0px))
+    8.35rem,
+    calc(6rem + env(safe-area-inset-top, 0px))
   );
   scroll-margin-top: max(
-    7.75rem,
-    calc(5.5rem + env(safe-area-inset-top, 0px))
+    8.35rem,
+    calc(6rem + env(safe-area-inset-top, 0px))
   );
+}
+
+/* Brand + wrapped pill nav (column layout) is taller than the stacked mobile bar */
+@media (min-width: 40rem) and (max-width: 51.98rem) {
+  .container.mainBelowFixedBar {
+    padding-top: max(
+      10.25rem,
+      calc(8.25rem + env(safe-area-inset-top, 0px))
+    );
+    scroll-margin-top: max(
+      10.25rem,
+      calc(8.25rem + env(safe-area-inset-top, 0px))
+    );
+  }
 }
 
 @media (min-width: 52rem) {
   .container.mainBelowFixedBar {
     padding-top: max(
-      5.5rem,
-      calc(4rem + env(safe-area-inset-top, 0px))
+      6.25rem,
+      calc(4.75rem + env(safe-area-inset-top, 0px))
     );
     scroll-margin-top: max(
-      5.5rem,
-      calc(4rem + env(safe-area-inset-top, 0px))
+      6.25rem,
+      calc(4.75rem + env(safe-area-inset-top, 0px))
     );
   }
 }
@@ -258,6 +272,24 @@
 .empty strong {
   display: block;
   color: var(--vad-ink);
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: rgba(226, 0, 116, 0.06);
+  border: 1px solid rgba(226, 0, 116, 0.2);
+  border-radius: var(--vad-radius-lg);
+  color: var(--vad-muted);
+  font-size: 0.95rem;
+}
+
+.loading strong {
+  display: block;
+  color: var(--vad-primary);
   font-weight: 600;
   margin-bottom: 0.35rem;
 }

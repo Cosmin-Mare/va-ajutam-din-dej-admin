@@ -116,6 +116,7 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [sponsorPartners, setSponsorPartners] = useState<SponsorPartner[]>([]);
+  const [listsReady, setListsReady] = useState(false);
   const [popupState, setPopupState] = useState<{
     isOpen: boolean;
     message: string;
@@ -136,10 +137,20 @@ export default function Home() {
   );
 
   useEffect(() => {
-    fetchPosts();
-    fetchProjects();
-    fetchMembers();
-    fetchSponsorPartners();
+    let cancelled = false;
+    const load = async () => {
+      await Promise.all([
+        fetchPosts(),
+        fetchProjects(),
+        fetchMembers(),
+        fetchSponsorPartners(),
+      ]);
+      if (!cancelled) setListsReady(true);
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const fetchPosts = async () => {
@@ -292,7 +303,12 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.gallery}>
-            {posts.length === 0 ? (
+            {!listsReady ? (
+              <div className={styles.loading} role="status" aria-live="polite">
+                <strong>Se încarcă…</strong>
+                Lista de noutăți se preia din baza de date.
+              </div>
+            ) : posts.length === 0 ? (
               <div className={styles.empty}>
                 <strong>Nu există postări.</strong>
                 Adaugă una cu „Postare nouă” sau publică o noutate pe care ai pregătit-o deja.
@@ -342,7 +358,12 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.gallery}>
-            {projects.length === 0 ? (
+            {!listsReady ? (
+              <div className={styles.loading} role="status">
+                <strong>Se încarcă…</strong>
+                Lista de proiecte se preia din baza de date.
+              </div>
+            ) : projects.length === 0 ? (
               <div className={styles.empty}>
                 <strong>Nu există proiecte.</strong>
                 Adaugă primul proiect cu butonul „Proiect nou”.
@@ -384,7 +405,12 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.gallery}>
-            {members.length === 0 ? (
+            {!listsReady ? (
+              <div className={styles.loading} role="status">
+                <strong>Se încarcă…</strong>
+                Lista de membri se preia din baza de date.
+              </div>
+            ) : members.length === 0 ? (
               <div className={styles.empty}>
                 <strong>Nu există membri.</strong>
                 Adaugă o înregistrare cu „Membru nou”.
@@ -434,7 +460,12 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.gallery}>
-            {sponsorsList.length === 0 ? (
+            {!listsReady ? (
+              <div className={styles.loading} role="status">
+                <strong>Se încarcă…</strong>
+                Lista de sponsori se preia din baza de date.
+              </div>
+            ) : sponsorsList.length === 0 ? (
               <div className={styles.empty}>
                 <strong>Nu există sponsori în listă.</strong> Adaugă un sponsor sau, dacă nu există
                 niciun rând în colecție, site-ul poate arăta varianta statică a paginii.
@@ -462,7 +493,12 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.gallery}>
-            {partnersList.length === 0 ? (
+            {!listsReady ? (
+              <div className={styles.loading} role="status">
+                <strong>Se încarcă…</strong>
+                Lista de parteneri se preia din baza de date.
+              </div>
+            ) : partnersList.length === 0 ? (
               <div className={styles.empty}>
                 <strong>Nu există parteneri în listă.</strong> Adaugă un partener aici; tipul (sponsor
                 vs partener) poți alege și în editor.
