@@ -213,6 +213,13 @@
   gap: 0.5rem 1rem;
 }
 
+.sectionHeaderActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .sectionHeaderTop h2 {
   margin: 0;
 }
@@ -243,6 +250,29 @@
 .createNewLink:focus-visible {
   outline: 2px solid var(--vad-teal);
   outline-offset: 2px;
+}
+
+.createNewLinkSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--vad-primary) !important;
+  background: var(--vad-surface);
+  border: 1px solid var(--vad-primary);
+  border-radius: var(--vad-radius);
+  transition: background 0.2s, color 0.2s;
+}
+
+.createNewLinkSecondary:hover {
+  background: rgba(226, 0, 116, 0.08);
+  color: var(--vad-primary-hover) !important;
 }
 
 .section h2,

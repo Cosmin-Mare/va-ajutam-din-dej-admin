@@ -298,14 +298,19 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <div className={styles.sectionHeaderTop}>
               <h2 id="sec-posts">Noutăți</h2>
-              <Link href="/post/create" className={styles.createNewLink}>
-                + Postare nouă
-              </Link>
+              <div className={styles.sectionHeaderActions}>
+                <Link href="/facebook" className={styles.createNewLinkSecondary}>
+                  Importă din Facebook
+                </Link>
+                <Link href="/post/create" className={styles.createNewLink}>
+                  + Postare nouă
+                </Link>
+              </div>
             </div>
             <p className={styles.sectionIntro}>
-              Articole afișate pe site în secțiunea de noutăți. „Postare nouă” deschide editorul cu
-              salvare automată; din listă, <strong>Editează</strong> pentru text, dată, link și
-              imagini.
+              Articole afișate pe site în secțiunea de noutăți. „Importă din Facebook” arată postările
+              paginii ca să alegi ce publici. „Postare nouă” deschide editorul cu salvare automată;
+              din listă, <strong>Editează</strong> pentru text, dată, link și imagini.
             </p>
           </div>
           <div className={styles.gallery}>
