@@ -240,7 +240,7 @@ export async function importSelectedFacebookPosts(ids: string[]): Promise<Facebo
     if (!id || seen[id]) continue;
     seen[id] = true;
     unique.push(id);
-    if (unique.length >= 20) break;
+    if (unique.length >= 8) break;
   }
   const result: FacebookSyncResult = {
     created: 0,

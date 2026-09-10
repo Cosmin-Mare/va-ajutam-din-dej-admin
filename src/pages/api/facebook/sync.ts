@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { importSelectedFacebookPosts } from "@/lib/facebook-sync";
 
 export const config = {
-  maxDuration: 120,
+  maxDuration: 60,
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,6 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (ids.length === 0) {
     return res.status(400).json({ message: "Selectează cel puțin o postare." });
+  }
+  if (ids.length > 8) {
+    return res.status(400).json({ message: "Importă cel mult 8 postări odată." });
   }
 
   try {

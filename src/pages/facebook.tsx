@@ -14,6 +14,8 @@ type FacebookRow = {
   sitePostId: number | null;
 };
 
+const MAX_IMPORT = 8;
+
 export default function FacebookImportPage() {
   const [posts, setPosts] = useState<FacebookRow[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -74,12 +76,23 @@ export default function FacebookImportPage() {
 
   const toggle = (id: string, synced: boolean) => {
     if (synced) return;
-    setSelected((prev) => ({ ...prev, [id]: !prev[id] }));
+    setSelected((prev) => {
+      const nextOn = !prev[id];
+      if (nextOn) {
+        const count = Object.keys(prev).filter((k) => prev[k]).length;
+        if (count >= MAX_IMPORT) {
+          setError(`Poți importa cel mult ${MAX_IMPORT} postări odată.`);
+          return prev;
+        }
+      }
+      setError("");
+      return { ...prev, [id]: nextOn };
+    });
   };
 
   const selectUnsynced = () => {
     const next: Record<string, boolean> = {};
-    for (const id of availableIds) next[id] = true;
+    for (const id of availableIds.slice(0, MAX_IMPORT)) next[id] = true;
     setSelected(next);
   };
 
@@ -249,7 +262,7 @@ export default function FacebookImportPage() {
           <span className={styles.status}>
             {selectedIds.length === 0
               ? "Nicio postare selectată"
-              : `${selectedIds.length} postări selectate`}
+              : `${selectedIds.length} postări selectate (max. ${MAX_IMPORT} odată)`}
           </span>
           <button
             type="button"
