@@ -16,7 +16,7 @@ const DESKTOP_NAV_MQ = "(min-width: 40rem)";
 
 type Variant = "home" | "layout";
 
-type NavId = "panou" | "posts" | "facebook" | "projects" | "members" | "sponsors" | "partners";
+type NavId = "panou" | "posts" | "facebook" | "form230" | "projects" | "members" | "sponsors" | "partners";
 
 type NavItem = {
   id: NavId;
@@ -28,6 +28,7 @@ const ITEMS: NavItem[] = [
   { id: "panou", label: "Panou" },
   { id: "posts", label: "Noutăți", sectionId: "posts" },
   { id: "facebook", label: "Facebook" },
+  { id: "form230", label: "Formular 230" },
   { id: "projects", label: "Proiecte", sectionId: "projects" },
   { id: "members", label: "Membri", sectionId: "members" },
   { id: "sponsors", label: "Sponsori", sectionId: "sponsors" },
@@ -38,6 +39,7 @@ const SECTION_IDS = ["posts", "projects", "members", "sponsors", "partners"] as 
 
 function routeActiveId(pathname: string, sponsorPartnerRole?: string): NavId {
   if (pathname.startsWith("/facebook")) return "facebook";
+  if (pathname.startsWith("/form230")) return "form230";
   if (pathname.startsWith("/post")) return "posts";
   if (pathname.startsWith("/project")) return "projects";
   if (pathname.startsWith("/member")) return "members";
@@ -218,6 +220,21 @@ export default function AdminNav({ variant = "layout" }: Props) {
             <li key={item.id} className={styles.item}>
               <Link
                 href="/facebook"
+                className={`${styles.link} ${on ? styles.active : ""}`}
+                aria-current={on ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            </li>
+          );
+        }
+
+        if (item.id === "form230") {
+          const on = isActive("form230");
+          return (
+            <li key={item.id} className={styles.item}>
+              <Link
+                href="/form230"
                 className={`${styles.link} ${on ? styles.active : ""}`}
                 aria-current={on ? "page" : undefined}
               >

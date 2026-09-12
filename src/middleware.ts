@@ -12,5 +12,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/facebook', '/facebook/:path*', '/post/:path*', '/project/:path*', '/member/:path*', '/sponsor-partner/:path*', '/api/:path*'],
+    matcher: ['/', '/facebook', '/facebook/:path*', '/form230', '/form230/:path*', '/post/:path*', '/project/:path*', '/member/:path*', '/sponsor-partner/:path*', '/api/:path*'],
 };
