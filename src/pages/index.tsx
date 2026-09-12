@@ -291,7 +291,8 @@ export default function Home() {
           <Link href="/member/create">membru</Link>,{' '}
           <Link href="/sponsor-partner/create?role=sponsor">sponsor</Link>,{' '}
           <Link href="/sponsor-partner/create?role=partner">partener</Link>
-          ).
+          ). Formularele 230 se gestionează din{' '}
+          <Link href="/form230">Formular 230</Link>.
         </p>
 
         <section id="posts" className={styles.section} aria-labelledby="sec-posts">
